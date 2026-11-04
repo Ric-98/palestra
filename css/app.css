@@ -653,3 +653,41 @@ body { font-size: 15px; }
 .bv-3 { font-size: 15px; }
 .bv-riga b { color: #D9B85C; }
 .bv-2 { color: #D9B85C; }
+
+/* =====================================================================
+   Palette definitiva: nero, oro champagne, bianco e grigi
+   ===================================================================== */
+:root {
+  --accent: #D9B85C;
+  --accent-press: #B89A45;
+  --oro-tinta: rgba(217,184,92,.16);
+  --green: #D9B85C;
+  --orange: #D9B85C;
+}
+.btn.primary, .chip.on, .segmented button.on, .timer-btn.salta, .set-check.on, .avatar, .update-banner { color: #000; }
+.btn.primary { background: var(--accent); }
+.update-banner button { background: #000; color: var(--accent); }
+.segmented button.on .muted, .chip.on .muted { color: rgba(0,0,0,.6); }
+.set-row.done { background: var(--oro-tinta); }
+.tag-ss, .tag-mod, .tag-mod.blu { color: var(--accent); background: var(--oro-tinta); }
+.cal-giorno.allenato { background: var(--oro-tinta); }
+.cal-giorno i { background: var(--accent); }
+.list-item .li-icon { color: var(--text-2); }
+.switch.on { background: var(--accent); }
+.switch.on::after { background: #000; }
+.set-num.w { color: var(--accent); }
+.set-nota { color: var(--text-2); }
+.voce-cotto { color: var(--accent); }
+.risultato-g { color: var(--accent); }
+.tab[aria-current="page"] { color: var(--accent); background: rgba(255,255,255,.05); }
+.trofeo svg { color: var(--accent); }
+.g-barra { fill: var(--accent); }
+.g-linea { stroke: var(--accent); }
+.g-punto { fill: var(--accent); }
+.select { color: var(--accent); }
+a { color: var(--accent); }
+.bv-riga b, .bv-2 { color: var(--accent); }
+.badge.ok { color: var(--accent); }
+.scelta.blocco { color: var(--accent); }
+.card.stat.on { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.card-btn.in-corso { border-color: var(--accent); }
