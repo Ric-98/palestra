@@ -1,5 +1,5 @@
 // Service worker: cache versionata dell'app, aggiornamento automatico.
-const VERSION = '2026-11-04.1925';
+const VERSION = '2026-11-04.1942';
 const CACHE = 'palestra-' + VERSION;
 const ASSETS = [
   './',
@@ -11,9 +11,18 @@ const ASSETS = [
   './js/store.js',
   './js/ui.js',
   './js/version.js',
+  './js/dati.js',
+  './js/allenamenti.js',
+  './js/corrente.js',
+  './js/hevy.js',
+  './js/timer.js',
   './js/views/allenamento.js',
+  './js/views/scheda.js',
+  './js/views/allena.js',
+  './js/views/storico.js',
   './js/views/alimentazione.js',
   './js/views/profilo.js',
+  './data/esercizi.json',
   './data/schede.json',
   './data/diete.json',
   './icons/icon-180.png',
@@ -22,6 +31,8 @@ const ASSETS = [
 ];
 
 const urlDi = (p) => new URL(p, self.location).href;
+// In locale (sviluppo) si va sempre in rete, così le modifiche si vedono subito.
+const SVILUPPO = ['localhost', '127.0.0.1'].includes(self.location.hostname);
 const INDEX = urlDi('./index.html');
 
 self.addEventListener('install', (event) => {
@@ -49,7 +60,7 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET' || SVILUPPO) return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 

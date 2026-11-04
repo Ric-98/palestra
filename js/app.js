@@ -1,6 +1,10 @@
 import { route, avviaRouter } from './router.js';
 import { richiediPersistenza } from './store.js';
+import { caricaDati } from './dati.js';
 import { renderAllenamento } from './views/allenamento.js';
+import { renderGiorno } from './views/scheda.js';
+import { renderAllena } from './views/allena.js';
+import { renderStorico, renderDettaglio } from './views/storico.js';
 import { renderAlimentazione } from './views/alimentazione.js';
 import { renderProfilo } from './views/profilo.js';
 
@@ -8,21 +12,41 @@ const view = document.getElementById('view');
 const tabs = Array.from(document.querySelectorAll('.tabbar .tab'));
 
 route('/allenamento', renderAllenamento);
+route('/giorno/:scheda/:giorno', renderGiorno);
+route('/allena', renderAllena);
+route('/storico', renderStorico);
+route('/storico/:id', renderDettaglio);
 route('/alimentazione', renderAlimentazione);
 route('/profilo', renderProfilo);
 
-avviaRouter('/allenamento', (path, r, params) => {
-  const tab = path.split('/')[1];
-  for (const a of tabs) {
-    if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
+const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', profilo: 'profilo' };
+let smonta = null;
+
+async function avvia() {
+  try {
+    await caricaDati();
+  } catch (e) {
+    view.innerHTML = '<div class="empty"><h3>Dati non caricati</h3><p>Controlla la connessione e riapri l\'app.</p></div>';
+    console.error(e);
+    return;
   }
-  view.innerHTML = '';
-  r.handler(view, params);
-  window.scrollTo(0, 0);
-});
+  avviaRouter('/allenamento', (path, r, params) => {
+    const tab = TAB_DI[path.split('/')[1]] || '';
+    for (const a of tabs) {
+      if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+    if (typeof smonta === 'function') { try { smonta(); } catch (e) { console.warn(e); } }
+    smonta = null;
+    view.innerHTML = '';
+    const esito = r.handler(view, params);
+    if (typeof esito === 'function') smonta = esito;
+    window.scrollTo(0, 0);
+  });
+}
 
 richiediPersistenza();
+avvia();
 
 // ---- Aggiornamenti automatici (service worker) ----
 let swReg = null;

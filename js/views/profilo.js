@@ -2,9 +2,12 @@ import { html, raw, icone, toast, conferma, chiediTesto, mostraFoglio, isIOS, is
 import { store, impostazioni, salvaImpostazioni, esportaBackup, leggiBackup, applicaBackup, riassuntoBackup } from '../store.js';
 import { APP_VERSION } from '../version.js';
 import { controllaAggiornamenti } from '../app.js';
+import * as A from '../allenamenti.js';
+import { analizzaCsv, convertiHevy } from '../hevy.js';
+import { sbloccaAudio, suonaFineRiposo, avviaTimerIphone } from '../timer.js';
 
 function statistiche() {
-  const allenamenti = store.get('allenamenti', []);
+  const allenamenti = A.tutti();
   const inizioSettimana = new Date();
   const giorno = (inizioSettimana.getDay() + 6) % 7; // lunedì = 0
   inizioSettimana.setHours(0, 0, 0, 0);
@@ -15,7 +18,7 @@ function statistiche() {
     if (a.inizio && a.fine && new Date(a.inizio) >= inizioSettimana) {
       secondiSettimana += (new Date(a.fine) - new Date(a.inizio)) / 1000;
     }
-    for (const e of a.esercizi || []) serie += (e.set || []).filter((s) => s.fatto).length;
+    for (const e of a.esercizi || []) serie += (e.serie || []).filter((s) => s.fatto).length;
   }
   const ore = secondiSettimana / 3600;
   return {
@@ -31,6 +34,7 @@ export function renderProfilo(el) {
   const iniziale = (imp.nome || 'P').trim().charAt(0);
   const st = statistiche();
   const standalone = isStandalone();
+  const nHevy = A.tutti().filter((a) => a.origine === 'hevy').length;
 
   el.innerHTML = html`
     <header class="page-head">
@@ -72,6 +76,12 @@ export function renderProfilo(el) {
         <span class="li-right">${raw(icone.chevron)}</span>
       </button>
       <input type="file" id="file-importa" accept=".json,application/json" hidden>
+      <button type="button" class="list-item" id="btn-hevy">
+        <span class="li-icon">${raw(icone.ripristina)}</span>
+        <span class="li-body"><div class="li-title">Importa da Hevy</div><div class="li-sub">${nHevy ? `${nHevy} allenamenti importati` : 'File CSV esportato da Hevy'}</div></span>
+        <span class="li-right">${raw(icone.chevron)}</span>
+      </button>
+      <input type="file" id="file-hevy" accept=".csv,text/csv,text/plain" hidden>
       <div class="list-item">
         <span class="li-icon">${raw(icone.info)}</span>
         <span class="li-body"><div class="li-title">Spazio usato</div><div class="li-sub">${formattaBytes(store.bytes())} sul dispositivo</div></span>
@@ -79,6 +89,27 @@ export function renderProfilo(el) {
       <button type="button" class="list-item danger" id="btn-reset">
         <span class="li-icon">${raw(icone.cestino)}</span>
         <span class="li-body"><div class="li-title">Cancella tutti i dati</div></span>
+      </button>
+    </div>
+
+    <h2 class="section-title">Timer di riposo</h2>
+    <div class="list">
+      <button type="button" class="list-item" id="btn-timer-iphone">
+        <span class="li-icon">${raw(icone.timer)}</span>
+        <span class="li-body"><div class="li-title">Timer anche sull'iPhone</div><div class="li-sub">Avvia il Comando rapido "${imp.nomeComando || 'Riposo'}" a ogni riposo</div></span>
+        <span class="switch ${imp.timerIphone ? 'on' : ''}" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="list-item" id="btn-nome-comando">
+        <span class="li-icon">${raw(icone.matita)}</span>
+        <span class="li-body"><div class="li-title">Nome del Comando rapido</div><div class="li-sub">${imp.nomeComando || 'Riposo'}</div></span>
+      </button>
+      <button type="button" class="list-item" id="btn-prova-suono">
+        <span class="li-icon">${raw(icone.play)}</span>
+        <span class="li-body"><div class="li-title">Prova il suono</div><div class="li-sub">Il segnale di fine riposo, sopra la musica</div></span>
+      </button>
+      <button type="button" class="list-item" id="btn-prova-comando">
+        <span class="li-icon">${raw(icone.play)}</span>
+        <span class="li-body"><div class="li-title">Prova il Comando rapido</div><div class="li-sub">Avvia un timer di 10 secondi sull'iPhone</div></span>
       </button>
     </div>
 
@@ -141,6 +172,47 @@ export function renderProfilo(el) {
     applicaBackup(obj);
     toast('Backup ripristinato');
     setTimeout(() => location.reload(), 600);
+  };
+
+  const fileHevy = el.querySelector('#file-hevy');
+  el.querySelector('#btn-hevy').onclick = () => { fileHevy.value = ''; fileHevy.click(); };
+  fileHevy.onchange = async () => {
+    const f = fileHevy.files && fileHevy.files[0];
+    if (!f) return;
+    let esito;
+    try {
+      const righe = analizzaCsv(await f.text());
+      if (!righe.length || !('exercise_title' in righe[0])) throw new Error('Il file non sembra un export di Hevy (manca la colonna exercise_title).');
+      esito = convertiHevy(righe);
+    } catch (e) {
+      toast(e.message, 4000);
+      return;
+    }
+    const ok = await conferma({
+      titolo: 'Importare lo storico di Hevy?',
+      testo: `${esito.allenamenti.length} allenamenti trovati nel file. Quelli già importati vengono saltati.${esito.nonCollegati.length ? ` ${esito.nonCollegati.length} esercizi non corrispondono al catalogo e restano con il nome di Hevy.` : ''}`,
+      ok: 'Importa',
+    });
+    if (!ok) return;
+    const n = A.salvaMolti(esito.allenamenti);
+    toast(n ? `Importati ${n} allenamenti` : 'Niente di nuovo da importare', 3000);
+    renderProfilo(el);
+  };
+
+  el.querySelector('#btn-timer-iphone').onclick = () => {
+    salvaImpostazioni({ timerIphone: !imp.timerIphone });
+    renderProfilo(el);
+  };
+  el.querySelector('#btn-nome-comando').onclick = async () => {
+    const v = await chiediTesto({ titolo: 'Nome del Comando rapido', valore: imp.nomeComando || 'Riposo', placeholder: 'Riposo' });
+    if (v === null) return;
+    salvaImpostazioni({ nomeComando: v || 'Riposo' });
+    renderProfilo(el);
+  };
+  el.querySelector('#btn-prova-suono').onclick = () => { sbloccaAudio(); setTimeout(suonaFineRiposo, 80); };
+  el.querySelector('#btn-prova-comando').onclick = () => {
+    if (!imp.timerIphone) { toast('Prima attiva "Timer anche sull\'iPhone"'); return; }
+    avviaTimerIphone(10);
   };
 
   el.querySelector('#btn-reset').onclick = async () => {
