@@ -368,3 +368,32 @@ body.in-allenamento .view { padding-bottom: 120px; }
 .switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .2s; }
 .switch.on { background: var(--green); }
 .switch.on::after { left: 23px; }
+
+/* ---- Alimentazione ---- */
+.segmented { display: flex; background: var(--bg-elev-2); border-radius: 12px; padding: 3px; gap: 3px; }
+.segmented button { flex: 1; border: 0; background: transparent; color: var(--text-2); font-size: 15px; font-weight: 600; min-height: 38px; border-radius: 10px; }
+.segmented button.on { background: var(--accent); color: #fff; }
+.segmented button.on .muted { color: rgba(255,255,255,.8); }
+.segmented button[disabled] { opacity: .4; }
+.pasto .card-title { margin-bottom: 8px; }
+.riga-pasto { padding: 10px 0; border-top: 1px solid var(--line); }
+.riga-pasto:first-of-type { border-top: 0; padding-top: 4px; }
+.riga-tipo { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--text-2); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 0; background: var(--bg-elev-2); color: var(--text); font-size: 15px; padding: 9px 12px; border-radius: 999px; text-align: left; }
+.chip b { font-weight: 700; }
+.chip.on { background: var(--accent); color: #fff; }
+.chip.dim { opacity: .55; }
+.voce { padding: 4px 0; font-size: 16px; }
+.voce-q { font-weight: 700; }
+.voce-cotto { font-size: 14px; color: var(--green); margin-top: 6px; }
+.campo { display: block; }
+.input.grande { font-size: 28px; font-weight: 700; text-align: center; margin-top: 6px; }
+.risultato { text-align: center; padding: 16px 0 6px; }
+.risultato-g { font-size: 40px; font-weight: 800; color: var(--green); letter-spacing: -.5px; }
+details summary { cursor: pointer; list-style: none; margin-top: 12px; }
+details summary::-webkit-details-marker { display: none; }
+.tab-row { display: grid; grid-template-columns: 1fr 64px 64px; gap: 8px; width: 100%; border: 0; background: none; color: var(--text); text-align: left; padding: 9px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.tab-row span:nth-child(n+2) { text-align: right; font-variant-numeric: tabular-nums; }
+.tab-row.head { border-top: 0; font-size: 11px; text-transform: uppercase; color: var(--text-3); font-weight: 600; padding: 4px 0; }
+.tab-row.on span:first-child { color: var(--accent); font-weight: 600; }

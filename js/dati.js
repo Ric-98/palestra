@@ -3,6 +3,9 @@ let esercizi = null;   // array
 let perId = new Map();
 let perAlias = new Map();
 let schede = null;
+let diete = null;
+let conversioni = null;
+let convPerId = new Map();
 
 async function carica(url) {
   const res = await fetch(url);
@@ -11,10 +14,13 @@ async function carica(url) {
 }
 
 export async function caricaDati() {
-  if (esercizi && schede) return;
-  const [e, s] = await Promise.all([carica('data/esercizi.json'), carica('data/schede.json')]);
+  if (esercizi && schede && diete && conversioni) return;
+  const [e, s, d, c] = await Promise.all([carica('data/esercizi.json'), carica('data/schede.json'), carica('data/diete.json'), carica('data/conversioni.json')]);
   esercizi = e;
   schede = s;
+  diete = d;
+  conversioni = c;
+  convPerId = new Map((c.alimenti || []).map((a) => [a.id, a]));
   perId = new Map(e.map((x) => [x.id, x]));
   perAlias = new Map();
   for (const x of e) for (const a of x.alias || []) perAlias.set(a.toLowerCase(), x.id);
@@ -57,4 +63,36 @@ export function riassuntoSerie(serie) {
     else out.push({ n: 1, reps: s.reps, nota: s.nota || '' });
   }
   return out.map((o) => `${o.n}x${o.reps}${o.nota ? ' ' + o.nota : ''}`).join(' · ');
+}
+
+// ---- Diete ----
+export function tutteDiete() { return diete || []; }
+export function dietaAttiva() { return (diete || []).find((d) => d.attiva) || (diete || [])[0] || null; }
+export function dieta(id) { return (diete || []).find((d) => d.id === id) || null; }
+
+// ---- Conversioni crudo/cotto ----
+export function tabellaConversioni() { return conversioni || { alimenti: [], metodi: {} }; }
+export function alimentoConv(id) { return convPerId.get(id) || null; }
+export const METODI = ['bollito', 'arrosto'];
+
+// Converte un peso. verso: 'crudo-cotto' (default) oppure 'cotto-crudo'.
+// Se il metodo scelto non esiste per l'alimento usa l'altro e lo dice nel risultato.
+export function convertiPeso(grammi, alimentoId, metodo = 'bollito', verso = 'crudo-cotto', fattorePersonalizzato = null) {
+  const g = Number(grammi);
+  if (!isFinite(g) || g <= 0) return null;
+  let fattore = fattorePersonalizzato;
+  let metodoUsato = metodo;
+  if (!fattore) {
+    const a = alimentoConv(alimentoId);
+    if (!a) return null;
+    if (a[metodo]) fattore = a[metodo];
+    else {
+      const altro = METODI.find((m) => a[m]);
+      if (!altro) return null;
+      fattore = a[altro];
+      metodoUsato = altro;
+    }
+  }
+  const risultato = verso === 'cotto-crudo' ? g / fattore : g * fattore;
+  return { g: Math.round(risultato), esatto: risultato, fattore, metodo: metodoUsato, verso };
 }

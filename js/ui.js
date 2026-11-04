@@ -130,4 +130,5 @@ export const icone = {
   piu: svg('<path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/>'),
   indietro: svg('<path d="M15.4 7.4L10.8 12l4.6 4.6L14 18l-6-6 6-6z"/>'),
   play: svg('<path d="M8 5v14l11-7z"/>'),
+  bilancia: svg('<path d="M12 3a2 2 0 0 1 2 2h5v2h-2.3l3.3 7a4 4 0 0 1-8 0h.1l3.2-7H13v9h4v2H7v-2h4V7H9.7l3.2 7H13a4 4 0 0 1-8 0l3.3-7H5V5h5a2 2 0 0 1 2-2zm7 8.3L17.4 14h3.2zM7 11.3 5.4 14h3.2z"/>'),
 };

@@ -1,11 +1,14 @@
 import { route, avviaRouter } from './router.js';
 import { richiediPersistenza } from './store.js';
 import { caricaDati } from './dati.js';
+import { caricaStoricoIncluso } from './storico-incluso.js';
 import { renderAllenamento } from './views/allenamento.js';
 import { renderGiorno } from './views/scheda.js';
 import { renderAllena } from './views/allena.js';
 import { renderStorico, renderDettaglio } from './views/storico.js';
 import { renderAlimentazione } from './views/alimentazione.js';
+import { renderDieta } from './views/dieta.js';
+import { renderConvertitore } from './views/convertitore.js';
 import { renderProfilo } from './views/profilo.js';
 
 const view = document.getElementById('view');
@@ -17,14 +20,19 @@ route('/allena', renderAllena);
 route('/storico', renderStorico);
 route('/storico/:id', renderDettaglio);
 route('/alimentazione', renderAlimentazione);
+route('/dieta/:id', renderDieta);
+route('/dieta/:id/:pasto', renderDieta);
+route('/convertitore', renderConvertitore);
+route('/convertitore/:alimento/:g', renderConvertitore);
 route('/profilo', renderProfilo);
 
-const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', profilo: 'profilo' };
+const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', dieta: 'alimentazione', convertitore: 'alimentazione', profilo: 'profilo' };
 let smonta = null;
 
 async function avvia() {
   try {
     await caricaDati();
+    await caricaStoricoIncluso();
   } catch (e) {
     view.innerHTML = '<div class="empty"><h3>Dati non caricati</h3><p>Controlla la connessione e riapri l\'app.</p></div>';
     console.error(e);
