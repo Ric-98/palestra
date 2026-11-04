@@ -2,6 +2,7 @@ import { route, avviaRouter } from './router.js';
 import { richiediPersistenza } from './store.js';
 import { caricaDati } from './dati.js';
 import { caricaStoricoIncluso } from './storico-incluso.js';
+import { avviaBenvenuto } from './benvenuto.js';
 import { renderAllenamento } from './views/allenamento.js';
 import { renderGiorno } from './views/scheda.js';
 import { renderModifica } from './views/modifica.js';
@@ -62,6 +63,7 @@ async function avvia() {
     if (typeof esito === 'function') smonta = esito;
     window.scrollTo(0, 0);
   });
+  avviaBenvenuto();
 }
 
 richiediPersistenza();

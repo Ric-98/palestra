@@ -163,6 +163,7 @@ function spunta(i, j) {
   T.sbloccaAudio();
   if (s.fatto) {
     s.fatto = false; s.pr = false;
+    T.fermaRiposo(); // spunta tolta per sbaglio: il riposo si ferma
     salva(); ridisegnaCard(i); aggiornaStats();
     return;
   }

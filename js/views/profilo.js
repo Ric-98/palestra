@@ -7,6 +7,7 @@ import { analizzaCsv, convertiHevy } from '../hevy.js';
 import { sbloccaAudio, suonaFineRiposo, avviaTimerIphone } from '../timer.js';
 import { vai } from '../router.js';
 import { bloccoGraficoSettimanale, collegaGraficoSettimanale } from './statistiche.js';
+import { mostraBenvenuto } from '../benvenuto.js';
 
 function statistiche() {
   const allenamenti = A.tutti();
@@ -124,6 +125,10 @@ export function renderProfilo(el) {
         <span class="li-body"><div class="li-title">Installa sull'iPhone</div><div class="li-sub">Aggiungi alla schermata Home</div></span>
         <span class="li-right">${raw(icone.chevron)}</span>
       </button>`}
+      <button type="button" class="list-item" id="btn-saluto">
+        <span class="li-icon">${raw(icone.play)}</span>
+        <span class="li-body"><div class="li-title">Rivedi il saluto di oggi</div><div class="li-sub">Compare da solo alla prima apertura del giorno</div></span>
+      </button>
       <button type="button" class="list-item" id="btn-aggiorna">
         <span class="li-icon">${raw(icone.aggiorna)}</span>
         <span class="li-body"><div class="li-title">Controlla aggiornamenti</div><div class="li-sub">Versione ${APP_VERSION}${standalone ? ' · installata' : ''}</div></span>
@@ -251,6 +256,7 @@ export function renderProfilo(el) {
     };
   }
 
+  el.querySelector('#btn-saluto').onclick = () => mostraBenvenuto({ forza: true });
   el.querySelector('#btn-aggiorna').onclick = async () => {
     toast('Controllo...');
     const esito = await controllaAggiornamenti();

@@ -435,3 +435,37 @@ details summary::-webkit-details-marker { display: none; }
 .input.piccolo { padding: 9px 10px; font-size: 15px; border-radius: 10px; }
 .icon-btn.small.rosso svg { color: var(--red); }
 .icon-btn[disabled] { opacity: .3; }
+
+/* ---- Saluto del giorno ---- */
+.benvenuto {
+  position: fixed; inset: 0; z-index: 100;
+  background: radial-gradient(120% 80% at 50% 30%, #0b1a33 0%, #000 70%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; text-align: center; opacity: 0; transition: opacity .35s ease;
+  cursor: pointer;
+}
+.benvenuto.on { opacity: 1; }
+.benvenuto.via { opacity: 0; }
+.bv-figura { width: min(62vw, 260px); filter: drop-shadow(0 0 24px rgba(10,132,255,.45)); transform: scale(.4) translateY(30px); opacity: 0; }
+.benvenuto.on .bv-figura { animation: bv-pop .9s cubic-bezier(.2,1.4,.4,1) .1s forwards; }
+.benvenuto.on .bb-alone { animation: bv-pulsa 2.2s ease-in-out 1s infinite; transform-origin: 100px 95px; }
+.benvenuto.on .bb-corpo { animation: bv-flex 1.6s ease-in-out 1.1s infinite alternate; transform-origin: 100px 110px; }
+.bv-testo { margin-top: 22px; }
+.bv-riga { margin: 0; font-size: 22px; font-weight: 700; line-height: 1.3; opacity: 0; transform: translateY(14px); }
+.bv-riga b { color: var(--accent); }
+.bv-2 { color: var(--orange); font-size: 26px; letter-spacing: -.3px; }
+.bv-3 { color: var(--text-2); font-weight: 600; font-size: 19px; }
+.benvenuto.on .bv-1 { animation: bv-sale .5s ease-out .7s forwards; }
+.benvenuto.on .bv-2 { animation: bv-sale .5s ease-out 1.25s forwards, bv-scossa .5s ease-in-out 1.9s; }
+.benvenuto.on .bv-3 { animation: bv-sale .5s ease-out 1.8s forwards; }
+.bv-chiudi { position: absolute; bottom: calc(var(--safe-bottom) + 24px); margin: 0; font-size: 13px; color: var(--text-3); opacity: 0; }
+.benvenuto.on .bv-chiudi { animation: bv-sale .5s ease-out 2.4s forwards; }
+@keyframes bv-pop { to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes bv-sale { to { opacity: 1; transform: translateY(0); } }
+@keyframes bv-pulsa { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: .7; } }
+@keyframes bv-flex { from { transform: scale(1); } to { transform: scale(1.04); } }
+@keyframes bv-scossa { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) {
+  .benvenuto.on .bv-figura, .benvenuto.on .bv-riga, .benvenuto.on .bv-chiudi { animation: none; opacity: 1; transform: none; }
+  .benvenuto.on .bb-alone, .benvenuto.on .bb-corpo { animation: none; }
+}
