@@ -24,7 +24,7 @@ export function esercizioDaPiano(voce) {
   const pianificate = espandiSerie(voce.serie || '3x10');
   const serie = [];
   if (voce.avvicinamento !== false) serie.push({ tipo: 'W', kg: '', reps: '', rpe: null, fatto: false, target: '' });
-  for (const p of pianificate) serie.push({ tipo: 'N', kg: '', reps: '', rpe: null, fatto: false, target: p.reps || '', notaSet: p.nota || '' });
+  for (const p of pianificate) serie.push({ tipo: p.tipo === 'W' ? 'W' : 'N', kg: '', reps: '', rpe: null, fatto: false, target: p.reps || '', notaSet: p.nota || '' });
   return {
     exId: cat.id,
     nome: cat.nome,

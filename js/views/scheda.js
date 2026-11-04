@@ -14,9 +14,9 @@ export function renderGiorno(el, params) {
     <header class="page-head">
       <button type="button" class="icon-btn" id="btn-back" aria-label="Indietro">${raw(icone.indietro)}</button>
       <div class="muted">Giorno</div>
-      <span style="width:44px"></span>
+      <button type="button" class="btn ghost small" id="btn-modifica">Modifica</button>
     </header>
-    <h1 class="page-title" style="font-size:26px">${g.nome}</h1>
+    <h1 class="page-title" style="font-size:26px">${g.nome}${g.modificato || g.aggiunto ? html` <span class="tag-mod">${g.aggiunto ? 'tuo' : 'modificato'}</span>` : ''}</h1>
     <p class="muted small" style="margin:4px 0 16px">${s.nome}${g.voltePerSettimana ? ` · ${g.voltePerSettimana} volte a settimana` : ''}</p>
     <button type="button" class="btn primary block" id="btn-inizia">Inizia allenamento</button>
 
@@ -47,5 +47,6 @@ export function renderGiorno(el, params) {
   `.toString();
 
   el.querySelector('#btn-back').onclick = () => indietro('/allenamento');
+  el.querySelector('#btn-modifica').onclick = () => vai(`/modifica/${s.id}/${g.id}`);
   el.querySelector('#btn-inizia').onclick = () => inizia({ titolo: g.nome, schedaId: s.id, giornoId: g.id, voci: g.esercizi });
 }

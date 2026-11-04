@@ -2,29 +2,101 @@
 import { impostazioni } from './store.js';
 
 // ---- Audio ----
+// Su iPhone il motore audio della pagina viene sospeso quando un'altra app (es. Spotify)
+// prende l'audio, e non riparte da solo: lo riattiviamo a ogni gesto e prima del beep,
+// e se non riparte usiamo un <audio> di riserva con lo stesso suono.
 let ctx = null;
-function contesto() {
-  if (!ctx) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    ctx = new AC();
-  }
-  return ctx;
-}
-// Da chiamare dentro un gesto dell'utente (tocco), sblocca l'audio su iPhone
-export function sbloccaAudio() {
-  try {
-    if (navigator.audioSession) navigator.audioSession.type = 'ambient'; // non ferma la musica
-    const c = contesto();
-    if (!c) return;
-    if (c.state === 'suspended') c.resume();
-    const b = c.createBuffer(1, 1, 22050);
-    const s = c.createBufferSource();
-    s.buffer = b; s.connect(c.destination); s.start(0);
-  } catch (e) { /* ignora */ }
+let audioRiserva = null;
+let riservaPronta = false;
+
+function sessione(tipo) {
+  try { if (navigator.audioSession) navigator.audioSession.type = tipo; } catch (e) { /* ignora */ }
 }
 
-function tono(c, freq, inizio, durata, volume = 0.25) {
+function nuovoContesto() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try { if (ctx && ctx.state !== 'closed') ctx.close(); } catch (e) { /* ignora */ }
+  ctx = new AC();
+  return ctx;
+}
+function contesto() {
+  if (!ctx || ctx.state === 'closed') return nuovoContesto();
+  return ctx;
+}
+async function riattiva(c) {
+  if (!c) return false;
+  if (c.state === 'running') return true;
+  try { await c.resume(); } catch (e) { /* ignora */ }
+  if (c.state === 'running') return true;
+  // Safari segnala "interrupted" e a volte non riparte: si ricrea il contesto
+  const n = nuovoContesto();
+  if (!n) return false;
+  try { await n.resume(); } catch (e) { /* ignora */ }
+  return n.state === 'running';
+}
+
+// File WAV generato una volta sola con lo stesso segnale (due note, ripetute)
+function wavBeep() {
+  const sr = 22050, durata = 1.05;
+  const n = Math.floor(sr * durata);
+  const note = [[880, 0.00, 0.14], [1174.7, 0.17, 0.20], [880, 0.55, 0.14], [1174.7, 0.72, 0.26]];
+  const campioni = new Float32Array(n);
+  for (const [f, t0, d] of note) {
+    const a = Math.floor(t0 * sr), b = Math.min(n, Math.floor((t0 + d) * sr));
+    for (let i = a; i < b; i++) {
+      const t = (i - a) / sr;
+      const env = Math.min(1, t / 0.01, (b - i) / sr / 0.03);
+      campioni[i] += 0.5 * env * Math.sin(2 * Math.PI * f * t);
+    }
+  }
+  const buf = new ArrayBuffer(44 + n * 2);
+  const v = new DataView(buf);
+  const scrivi = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  scrivi(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); scrivi(8, 'WAVE'); scrivi(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true);
+  v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); scrivi(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, campioni[i])) * 32767, true);
+  let bin = '';
+  const bytes = new Uint8Array(buf);
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return 'data:audio/wav;base64,' + btoa(bin);
+}
+function riserva() {
+  if (!audioRiserva) {
+    audioRiserva = new Audio(wavBeep());
+    audioRiserva.setAttribute('playsinline', '');
+    audioRiserva.preload = 'auto';
+  }
+  return audioRiserva;
+}
+
+// Da chiamare dentro un gesto dell'utente (tocco): sblocca o riattiva l'audio su iPhone
+export function sbloccaAudio() {
+  sessione('ambient'); // non ferma la musica di altre app
+  const c = contesto();
+  if (c) {
+    riattiva(c).then((ok) => {
+      if (!ok) return;
+      try {
+        const b = c.createBuffer(1, 1, 22050);
+        const s = c.createBufferSource();
+        s.buffer = b; s.connect(c.destination); s.start(0);
+      } catch (e) { /* ignora */ }
+    });
+  }
+  if (!riservaPronta) {
+    try {
+      const r = riserva();
+      r.muted = true;
+      const p = r.play();
+      if (p && p.then) p.then(() => { r.pause(); r.currentTime = 0; r.muted = false; riservaPronta = true; }).catch(() => { r.muted = false; });
+      else { r.pause(); r.currentTime = 0; r.muted = false; riservaPronta = true; }
+    } catch (e) { /* ignora */ }
+  }
+}
+
+function tono(c, freq, inizio, durata, volume = 0.3) {
   const o = c.createOscillator();
   const g = c.createGain();
   o.type = 'sine';
@@ -37,18 +109,31 @@ function tono(c, freq, inizio, durata, volume = 0.25) {
   o.start(inizio); o.stop(inizio + durata + 0.02);
 }
 
-// Segnale corto: due note, ripetute due volte (circa 1 secondo)
-export function suonaFineRiposo() {
+// Segnale corto: due note, ripetute due volte (circa 1 secondo), sopra la musica
+export async function suonaFineRiposo() {
+  sessione('transient'); // suono breve: abbassa la musica un attimo invece di fermarla
+  let suonato = false;
   try {
     const c = contesto();
-    if (!c) return;
-    if (c.state === 'suspended') c.resume();
-    const t = c.currentTime + 0.02;
-    tono(c, 880, t, 0.14);
-    tono(c, 1174.7, t + 0.17, 0.2);
-    tono(c, 880, t + 0.55, 0.14);
-    tono(c, 1174.7, t + 0.72, 0.26);
+    if (c && (await riattiva(c))) {
+      const t = c.currentTime + 0.02;
+      tono(c, 880, t, 0.14);
+      tono(c, 1174.7, t + 0.17, 0.2);
+      tono(c, 880, t + 0.55, 0.14);
+      tono(c, 1174.7, t + 0.72, 0.26);
+      suonato = true;
+    }
   } catch (e) { /* ignora */ }
+  if (!suonato) {
+    try {
+      const r = riserva();
+      r.currentTime = 0;
+      await r.play();
+      suonato = true;
+    } catch (e) { /* ignora */ }
+  }
+  setTimeout(() => sessione('ambient'), 1600);
+  return suonato;
 }
 
 // ---- Schermo acceso ----

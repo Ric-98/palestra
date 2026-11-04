@@ -1,4 +1,6 @@
 // Dati statici dell'app: catalogo esercizi e schede (file JSON in data/).
+// Le schede possono avere modifiche fatte dall'utente, salvate sul dispositivo.
+import { store } from './store.js';
 let esercizi = null;   // array
 let perId = new Map();
 let perAlias = new Map();
@@ -31,13 +33,70 @@ export function esercizio(id) { return perId.get(id) || null; }
 export function nomeEsercizio(id, fallback = '') { const e = perId.get(id); return e ? e.nome : fallback; }
 export function idDaAlias(nome) { return perAlias.get(String(nome).toLowerCase()) || null; }
 
-export function tutteSchede() { return schede || []; }
-export function schedaAttiva() { return (schede || []).find((s) => s.attiva) || (schede || [])[0] || null; }
-export function scheda(id) { return (schede || []).find((s) => s.id === id) || null; }
+// ---- Schede e modifiche dell'utente ----
+function tutteModifiche() { return store.get('schedeModifiche', {}) || {}; }
+export function modificheScheda(id) { return tutteModifiche()[id] || { giorni: {}, aggiunti: [], rimossi: [] }; }
+function salvaModifiche(id, m) { const t = tutteModifiche(); t[id] = m; store.set('schedeModifiche', t); }
+
+function applicaModifiche(s) {
+  const m = tutteModifiche()[s.id];
+  if (!m) return s;
+  const rimossi = new Set(m.rimossi || []);
+  const sovr = (g) => (m.giorni && m.giorni[g.id] ? { ...g, ...m.giorni[g.id], modificato: true } : g);
+  const giorni = (s.giorni || []).filter((g) => !rimossi.has(g.id)).map(sovr);
+  const aggiunti = (m.aggiunti || []).filter((g) => !rimossi.has(g.id)).map((g) => ({ ...sovr(g), aggiunto: true }));
+  const extra = (s.extra || []).filter((g) => !rimossi.has(g.id)).map(sovr);
+  return { ...s, nome: m.nome || s.nome, giorni: [...giorni, ...aggiunti], extra, modificata: true };
+}
+export function tutteSchede() { return (schede || []).map(applicaModifiche); }
+export function schedaAttiva() { const s = (schede || []).find((x) => x.attiva) || (schede || [])[0] || null; return s ? applicaModifiche(s) : null; }
+export function scheda(id) { const s = (schede || []).find((x) => x.id === id) || null; return s ? applicaModifiche(s) : null; }
+export function schedaOriginale(id) { return (schede || []).find((x) => x.id === id) || null; }
 export function giorno(schedaId, giornoId) {
   const s = scheda(schedaId);
   if (!s) return null;
   return (s.giorni || []).find((g) => g.id === giornoId) || (s.extra || []).find((g) => g.id === giornoId) || null;
+}
+export function giornoOriginale(schedaId, giornoId) {
+  const s = schedaOriginale(schedaId);
+  if (!s) return null;
+  return (s.giorni || []).find((g) => g.id === giornoId) || (s.extra || []).find((g) => g.id === giornoId) || null;
+}
+export function haModifiche(schedaId) {
+  const m = tutteModifiche()[schedaId];
+  return !!(m && (Object.keys(m.giorni || {}).length || (m.aggiunti || []).length || (m.rimossi || []).length || m.nome));
+}
+// Salva la versione modificata di un giorno (nome + esercizi)
+export function salvaGiorno(schedaId, giornoId, dati) {
+  const m = modificheScheda(schedaId);
+  m.giorni = m.giorni || {};
+  m.giorni[giornoId] = { nome: dati.nome, esercizi: dati.esercizi };
+  salvaModifiche(schedaId, m);
+}
+export function aggiungiGiorno(schedaId, nome) {
+  const m = modificheScheda(schedaId);
+  const id = 'g-' + Date.now().toString(36);
+  m.aggiunti = [...(m.aggiunti || []), { id, nome, esercizi: [] }];
+  salvaModifiche(schedaId, m);
+  return id;
+}
+export function rimuoviGiorno(schedaId, giornoId) {
+  const m = modificheScheda(schedaId);
+  m.rimossi = Array.from(new Set([...(m.rimossi || []), giornoId]));
+  if (m.giorni) delete m.giorni[giornoId];
+  m.aggiunti = (m.aggiunti || []).filter((g) => g.id !== giornoId);
+  salvaModifiche(schedaId, m);
+}
+export function ripristinaGiorno(schedaId, giornoId) {
+  const m = modificheScheda(schedaId);
+  if (m.giorni) delete m.giorni[giornoId];
+  m.rimossi = (m.rimossi || []).filter((x) => x !== giornoId);
+  salvaModifiche(schedaId, m);
+}
+export function ripristinaScheda(schedaId) {
+  const t = tutteModifiche();
+  delete t[schedaId];
+  store.set('schedeModifiche', t);
 }
 
 // "3x6-10" -> [{reps:"6-10"},...]; ["10","10",{reps:"20",nota:"..."}] -> oggetti
@@ -48,7 +107,7 @@ export function espandiSerie(serie) {
     return [{ reps: serie.trim() }];
   }
   if (Array.isArray(serie)) {
-    return serie.map((s) => (typeof s === 'string' ? { reps: s } : { reps: String(s.reps || ''), nota: s.nota || '' }));
+    return serie.map((s) => (typeof s === 'string' ? { reps: s } : { reps: String(s.reps || ''), nota: s.nota || '', tipo: s.tipo || 'N' }));
   }
   return [];
 }

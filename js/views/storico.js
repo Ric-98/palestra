@@ -2,6 +2,9 @@
 import { html, raw, icone, toast, conferma, mostraFoglio, formattaData } from '../ui.js';
 import { vai, indietro } from '../router.js';
 import * as A from '../allenamenti.js';
+import * as C from '../corrente.js';
+import { esercizio } from '../dati.js';
+import { inizia } from './allenamento.js';
 
 function riga(a) {
   const st = A.statistiche(a);
@@ -75,7 +78,26 @@ export function renderDettaglio(el, params) {
   `.toString();
   el.querySelector('#btn-back').onclick = () => indietro('/allenamento');
   el.querySelector('#btn-menu').onclick = () => {
-    const chiudi = mostraFoglio({ titolo: a.titolo, corpoHtml: '<div class="scelte"><button type="button" class="scelta rosso" id="sc-elimina">Elimina allenamento</button></div>' });
+    const chiudi = mostraFoglio({ titolo: a.titolo, corpoHtml: '<div class="scelte"><button type="button" class="scelta" id="sc-ripeti">Ripeti allenamento</button><button type="button" class="scelta" id="sc-modifica">Modifica allenamento</button><button type="button" class="scelta rosso" id="sc-elimina">Elimina allenamento</button></div>' });
+    document.getElementById('sc-ripeti').onclick = () => {
+      chiudi();
+      const voci = (a.esercizi || []).map((e) => ({ ex: e.exId, superset: e.superset || null, avvicinamento: false, serie: (e.serie || []).map((x) => ({ reps: String(x.reps || ''), tipo: x.tipo || 'N' })) }));
+      inizia({ titolo: a.titolo, schedaId: a.schedaId || null, giornoId: a.giornoId || null, voci });
+    };
+    document.getElementById('sc-modifica').onclick = () => {
+      chiudi();
+      if (C.inCorso()) { toast('Termina prima l\'allenamento in corso'); return; }
+      const w = {
+        ...a,
+        modifica: true,
+        esercizi: (a.esercizi || []).map((e) => ({
+          exId: e.exId, nome: A.nomeEsercizioLog(e), gruppo: (esercizio(e.exId) || {}).gruppo || '', superset: e.superset || null, riposo: e.riposo || 0, nota: e.nota || '',
+          serie: (e.serie || []).map((x) => ({ tipo: x.tipo || 'N', kg: x.kg === null || x.kg === undefined ? '' : String(x.kg), reps: String(x.reps ?? ''), rpe: x.rpe ?? null, fatto: true, pr: !!x.pr, target: x.target || '', notaSet: '' })),
+        })),
+      };
+      C.salvaInCorso(w);
+      vai('/allena');
+    };
     document.getElementById('sc-elimina').onclick = async () => {
       chiudi();
       const ok = await conferma({ titolo: 'Eliminare questo allenamento?', testo: 'Non si può annullare.', ok: 'Elimina', pericoloso: true });

@@ -1,9 +1,9 @@
 // Tab Allenamento: allenamento in corso, scheda attiva con i giorni, ultimi allenamenti.
-import { html, raw, icone, conferma, formattaData } from '../ui.js';
+import { html, raw, icone, conferma, chiediTesto, toast, formattaData } from '../ui.js';
 import { vai } from '../router.js';
 import * as C from '../corrente.js';
 import * as A from '../allenamenti.js';
-import { schedaAttiva, tutteSchede, nomeEsercizio } from '../dati.js';
+import { schedaAttiva, tutteSchede, nomeEsercizio, haModifiche, ripristinaScheda, aggiungiGiorno } from '../dati.js';
 
 function anteprima(g) {
   return (g.esercizi || []).map((v) => nomeEsercizio(v.ex, v.ex)).join(', ');
@@ -45,6 +45,13 @@ export function renderAllenamento(el) {
   const s = schedaAttiva();
   const ultimi = A.tutti().slice(0, 3);
   const archivio = tutteSchede().filter((x) => !x.attiva);
+  // prossimo giorno consigliato: quello dopo l'ultimo fatto, in ordine di scheda
+  let prossimo = null;
+  if (s && (s.giorni || []).length) {
+    const ids = s.giorni.map((g) => g.id);
+    const ultimoFatto = A.tutti().find((a) => a.schedaId === s.id && ids.includes(a.giornoId));
+    prossimo = ultimoFatto ? ids[(ids.indexOf(ultimoFatto.giornoId) + 1) % ids.length] : ids[0];
+  }
 
   el.innerHTML = html`
     <header class="page-head">
@@ -60,19 +67,16 @@ export function renderAllenamento(el) {
           </div>
           <span class="btn primary small">Riprendi</span>
         </div>
-      </button>` : html`
-      <button type="button" class="card card-btn" id="btn-libero">
-        <div class="row">${raw(icone.piu)}<span>Inizia allenamento libero</span></div>
-      </button>`}
+      </button>` : ''}
 
     ${s ? html`
       <h2 class="section-title">${s.nome}</h2>
       ${s.note ? html`<p class="muted small" style="margin:-6px 4px 12px">${s.note}</p>` : ''}
       <div class="stack">
         ${(s.giorni || []).map((g) => html`
-          <div class="card">
+          <div class="card ${g.id === prossimo ? 'prossimo' : ''}">
             <button type="button" class="card-link" data-giorno="${g.id}">
-              <p class="card-title">${g.nome}</p>
+              <p class="card-title">${g.nome}${g.id === prossimo ? html` <span class="tag-mod blu">prossimo</span>` : ''}${g.modificato || g.aggiunto ? html` <span class="tag-mod">${g.aggiunto ? 'tuo' : 'modificato'}</span>` : ''}</p>
               <p class="card-sub clamp-2">${anteprima(g)}</p>
             </button>
             <button type="button" class="btn primary block" data-inizia="${g.id}" style="margin-top:12px">Inizia allenamento</button>
@@ -92,6 +96,8 @@ export function renderAllenamento(el) {
             <button type="button" class="btn block" data-inizia="${b.id}" style="margin-top:12px">Inizia da solo</button>
           </div>`;
         })}
+        <button type="button" class="btn block ghost" id="btn-nuovo-giorno">+ Nuovo giorno</button>
+        ${haModifiche(s.id) ? html`<button type="button" class="btn block ghost small" id="btn-ripristina-scheda">Scheda modificata · ripristina la versione del coach</button>` : ''}
       </div>` : html`<div class="card"><div class="empty"><h3>Nessuna scheda</h3></div></div>`}
 
     ${archivio.length ? html`
@@ -109,8 +115,21 @@ export function renderAllenamento(el) {
 
   const riprendi = el.querySelector('#btn-riprendi');
   if (riprendi) riprendi.onclick = () => vai('/allena');
-  const libero = el.querySelector('#btn-libero');
-  if (libero) libero.onclick = () => inizia({ titolo: 'Allenamento libero', voci: [] });
+  const nuovo = el.querySelector('#btn-nuovo-giorno');
+  if (nuovo) nuovo.onclick = async () => {
+    const nome = await chiediTesto({ titolo: 'Nome del nuovo giorno', placeholder: 'es. Spalle extra' });
+    if (!nome) return;
+    const id = aggiungiGiorno(s.id, nome);
+    vai(`/modifica/${s.id}/${id}`);
+  };
+  const rip = el.querySelector('#btn-ripristina-scheda');
+  if (rip) rip.onclick = async () => {
+    const ok = await conferma({ titolo: 'Ripristinare la scheda del coach?', testo: 'Tutte le modifiche ai giorni e i giorni aggiunti verranno eliminati.', ok: 'Ripristina', pericoloso: true });
+    if (!ok) return;
+    ripristinaScheda(s.id);
+    toast('Scheda ripristinata');
+    renderAllenamento(el);
+  };
 
   el.querySelectorAll('[data-giorno]').forEach((b) => { b.onclick = () => vai(`/giorno/${s.id}/${b.dataset.giorno}`); });
   el.querySelectorAll('[data-inizia]').forEach((b) => {

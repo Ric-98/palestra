@@ -294,12 +294,12 @@ body.in-allenamento .tabbar { display: none; }
 body.in-allenamento .view { padding-bottom: 120px; }
 .allena-head {
   position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin: 0 calc(-1 * var(--gutter)); padding: calc(var(--safe-top) + 6px) var(--gutter) 8px;
+  margin: 0 calc(-1 * var(--gutter)); padding: calc(var(--safe-top) + 6px) var(--gutter) 0;
   background: rgba(0,0,0,.92); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
 }
+.allena-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 6px; }
 .allena-title { font-size: 17px; font-weight: 600; flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.allena-stats { display: flex; gap: 24px; padding: 10px 4px 14px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.allena-stats { display: flex; gap: 24px; padding: 6px 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
 .allena-stats div { font-size: 13px; color: var(--text-2); }
 .allena-stats strong { display: block; font-size: 20px; color: var(--text); font-weight: 600; margin-top: 2px; }
 .allena-stats #st-durata { color: var(--accent); }
@@ -424,3 +424,14 @@ details summary::-webkit-details-marker { display: none; }
 .cal-giorno i { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 .cal-giorno.oggi span { color: var(--accent); font-weight: 700; }
 .cal-giorno.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+
+/* ---- Editor scheda e rifiniture ---- */
+.tag-mod { display: inline-block; font-size: 12px; font-weight: 600; color: var(--orange); background: rgba(255,159,10,.15); padding: 2px 8px; border-radius: 999px; vertical-align: 3px; }
+.tag-mod.blu { color: var(--accent); background: rgba(10,132,255,.15); }
+.card.prossimo { box-shadow: inset 0 0 0 1px var(--accent); }
+.ed-serie { margin-top: 10px; }
+.ed-set { display: grid; grid-template-columns: 36px 72px 1fr 36px; gap: 6px; align-items: center; margin-top: 6px; }
+.ed-set.head { font-size: 11px; text-transform: uppercase; color: var(--text-3); font-weight: 600; margin-top: 0; }
+.input.piccolo { padding: 9px 10px; font-size: 15px; border-radius: 10px; }
+.icon-btn.small.rosso svg { color: var(--red); }
+.icon-btn[disabled] { opacity: .3; }

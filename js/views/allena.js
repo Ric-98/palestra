@@ -13,6 +13,7 @@ let recCache = {};
 let orologio = null;
 let salvaTimer = null;
 let el = null;
+let chiuso = false; // true dopo Termina/Annulla: la pagina non deve più salvare lo stato
 
 const RIPOSI = [0, 60, 90, 120, 150, 180, 240, 300];
 const RPE = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
@@ -99,19 +100,21 @@ function cardEsercizio(i) {
 function layout() {
   return html`
     <header class="allena-head">
-      <button type="button" class="icon-btn" id="btn-min" aria-label="Riduci">${raw(icone.giu)}</button>
-      <div class="allena-title">${w.titolo}</div>
-      <button type="button" class="btn primary small" id="btn-fine">Termina</button>
+      <div class="allena-top">
+        <button type="button" class="icon-btn" id="btn-min" aria-label="Riduci">${raw(icone.giu)}</button>
+        <div class="allena-title">${w.modifica ? 'Modifica · ' : ''}${w.titolo}</div>
+        <button type="button" class="btn primary small" id="btn-fine">${w.modifica ? 'Salva' : 'Termina'}</button>
+      </div>
+      <div class="allena-stats">
+        <div><span>Durata</span><strong id="st-durata">0:00</strong></div>
+        <div><span>Volume</span><strong id="st-volume">0 kg</strong></div>
+        <div><span>Serie</span><strong id="st-serie">0</strong></div>
+      </div>
     </header>
-    <div class="allena-stats">
-      <div><span>Durata</span><strong id="st-durata">0:00</strong></div>
-      <div><span>Volume</span><strong id="st-volume">0 kg</strong></div>
-      <div><span>Serie</span><strong id="st-serie">0</strong></div>
-    </div>
     <div id="esercizi">${w.esercizi.map((_, i) => cardEsercizio(i))}</div>
     <div class="stack" style="margin-top:16px">
       <button type="button" class="btn block" id="btn-add-ex">+ Aggiungi esercizio</button>
-      <button type="button" class="btn block ghost rosso" id="btn-annulla">Annulla allenamento</button>
+      <button type="button" class="btn block ghost rosso" id="btn-annulla">${w.modifica ? 'Annulla modifiche' : 'Annulla allenamento'}</button>
     </div>
     <div class="timer-bar" id="timer-bar" hidden>
       <div class="timer-progress"><div class="timer-progress-fill" id="timer-fill"></div></div>
@@ -129,7 +132,9 @@ function aggiornaStats() {
 }
 function aggiornaDurata() {
   const d = el.querySelector('#st-durata');
-  if (d) d.textContent = A.formattaOrologio((Date.now() - new Date(w.inizio)) / 1000);
+  if (!d) return;
+  const fine = w.modifica && w.fine ? new Date(w.fine) : Date.now();
+  d.textContent = A.formattaOrologio((fine - new Date(w.inizio)) / 1000);
 }
 function aggiornaTimer() {
   const bar = el.querySelector('#timer-bar');
@@ -182,7 +187,7 @@ function spunta(i, j) {
     recCache[e.exId] = rec;
   }
   salva();
-  if (e.riposo > 0 && !primoDiSuperset(i)) T.avviaRiposo(e.riposo);
+  if (!w.modifica && e.riposo > 0 && !primoDiSuperset(i)) T.avviaRiposo(e.riposo);
   ridisegnaCard(i); aggiornaStats();
   if (s.pr) toast('Nuovo record personale!');
 }
@@ -309,16 +314,21 @@ async function termina() {
   }
   let nonFatti = 0;
   for (const e of w.esercizi) for (const s of e.serie) if (!s.fatto) nonFatti++;
-  const ok = await conferma({
-    titolo: 'Terminare l\'allenamento?',
-    testo: `${st.serie} serie completate, ${st.volume.toLocaleString('it-IT')} kg di volume.${nonFatti ? ` I ${nonFatti} set non spuntati verranno scartati.` : ''}`,
-    ok: 'Termina',
-    annulla: 'Continua',
+  const ok = await new Promise((resolve) => {
+    const chiudi = mostraFoglio({
+      titolo: w.modifica ? 'Salvare le modifiche?' : 'Terminare l\'allenamento?',
+      corpoHtml: `<p class="muted" style="margin:0 0 10px">${st.serie} serie completate, ${st.volume.toLocaleString('it-IT')} kg di volume.${nonFatti ? ` I ${nonFatti} set non spuntati verranno scartati.` : ''}</p>
+        <input class="input" id="nota-fine" placeholder="Nota (facoltativa): come è andata?" value="${esc(w.note || '')}">
+        <div class="actions" style="margin-top:12px"><button type="button" class="btn primary" id="btn-ok-fine">${w.modifica ? 'Salva' : 'Termina'}</button></div>`,
+      chiudiTesto: 'Continua',
+    });
+    document.getElementById('btn-ok-fine').onclick = () => { w.note = document.getElementById('nota-fine').value.trim(); chiudi(); resolve(true); };
+    document.querySelector('.sheet [data-annulla]').addEventListener('click', () => resolve(false));
   });
   if (!ok) return;
   const finale = {
     ...w,
-    fine: new Date().toISOString(),
+    fine: w.modifica && w.fine ? w.fine : new Date().toISOString(),
     esercizi: w.esercizi
       .map((e) => ({
         exId: e.exId, nome: e.nome, superset: e.superset || null, riposo: e.riposo, nota: e.nota || '',
@@ -334,29 +344,46 @@ async function termina() {
       }))
       .filter((e) => e.serie.length),
   };
+  delete finale.modifica;
+  clearTimeout(salvaTimer);
+  chiuso = true;
   A.salva(finale);
   C.azzeraInCorso();
   T.fermaRiposo();
-  toast('Allenamento salvato');
+  toast(w.modifica ? 'Modifiche salvate' : 'Allenamento salvato');
   vai('/storico/' + finale.id, { sostituisci: true });
 }
 async function annulla(giaConfermato = false) {
+  if (w.modifica) {
+    const ok = await conferma({ titolo: 'Annullare le modifiche?', testo: 'L\'allenamento resta com\'era.', ok: 'Annulla modifiche', annulla: 'Continua', pericoloso: true });
+    if (!ok) return;
+    clearTimeout(salvaTimer);
+    chiuso = true;
+    C.azzeraInCorso();
+    vai('/storico/' + w.id, { sostituisci: true });
+    return;
+  }
   if (!giaConfermato) {
     const ok = await conferma({ titolo: 'Annullare l\'allenamento?', testo: 'I set inseriti andranno persi.', ok: 'Annulla allenamento', annulla: 'Continua', pericoloso: true });
     if (!ok) return;
   }
+  clearTimeout(salvaTimer);
+  chiuso = true;
   C.azzeraInCorso();
   T.fermaRiposo();
   vai('/allenamento', { sostituisci: true });
 }
 
 function bind() {
+  const root = el.querySelector('#allena-root');
   el.querySelector('#btn-min').onclick = () => { salvaSubito(); vai('/allenamento'); };
   el.querySelector('#btn-fine').onclick = termina;
   el.querySelector('#btn-annulla').onclick = () => annulla(false);
   el.querySelector('#btn-add-ex').onclick = aggiungiEsercizio;
 
-  el.addEventListener('click', (ev) => {
+  // Gli ascoltatori stanno sul contenitore della pagina, che viene distrutto quando si cambia
+  // schermata: così non si accumulano riaprendo il registro (ogni tocco veniva eseguito due volte).
+  root.addEventListener('click', (ev) => {
     const b = ev.target.closest('[data-azione]');
     if (!b) return;
     const i = Number(b.dataset.ex), j = Number(b.dataset.set);
@@ -374,14 +401,14 @@ function bind() {
       default: return undefined;
     }
   });
-  el.addEventListener('input', (ev) => {
+  root.addEventListener('input', (ev) => {
     const inp = ev.target.closest('.set-in');
     if (!inp) return;
     const s = w.esercizi[Number(inp.dataset.ex)].serie[Number(inp.dataset.set)];
     s[inp.dataset.campo] = inp.value.trim();
     salva();
   });
-  el.addEventListener('focusin', (ev) => {
+  root.addEventListener('focusin', (ev) => {
     const inp = ev.target.closest('.set-in');
     if (inp) setTimeout(() => inp.select(), 0);
   });
@@ -392,11 +419,12 @@ export function renderAllena(elemento) {
   w = C.inCorso();
   if (!w) { vai('/allenamento', { sostituisci: true }); return undefined; }
   prevCache = {}; recCache = {};
+  chiuso = false;
   calcolaCache();
   document.body.classList.add('in-allenamento');
   bloccaAutoAggiornamento(true);
   T.schermoAccesoDurante(true);
-  el.innerHTML = layout();
+  el.innerHTML = '<div id="allena-root">' + layout() + '</div>';
   bind();
   aggiornaStats();
   aggiornaDurata();
@@ -406,7 +434,7 @@ export function renderAllena(elemento) {
   return () => {
     clearInterval(orologio);
     stop();
-    salvaSubito();
+    if (!chiuso) salvaSubito();
     document.body.classList.remove('in-allenamento');
     bloccaAutoAggiornamento(false);
     T.schermoAccesoDurante(false);

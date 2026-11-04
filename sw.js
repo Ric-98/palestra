@@ -1,5 +1,5 @@
 // Service worker: cache versionata dell'app, aggiornamento automatico.
-const VERSION = '2026-11-04.2055';
+const VERSION = '2026-11-04.2111';
 const CACHE = 'palestra-' + VERSION;
 const ASSETS = [
   './',
@@ -21,6 +21,7 @@ const ASSETS = [
   './js/misure.js',
   './js/views/allenamento.js',
   './js/views/scheda.js',
+  './js/views/modifica.js',
   './js/views/allena.js',
   './js/views/storico.js',
   './js/views/alimentazione.js',
