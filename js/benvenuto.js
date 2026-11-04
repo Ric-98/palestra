@@ -2,7 +2,7 @@
 import { store, impostazioni } from './store.js';
 import { chiaveGiorno } from './allenamenti.js';
 
-const FIGURA = `<div class="bb-alone"></div><img class="bb-corpo" src="icons/bodybuilder.svg" alt="">`;
+const FIGURA = `<img class="bb-corpo" src="icons/bodybuilder.svg" alt="">`;
 
 export function mostraBenvenuto({ forza = false } = {}) {
   const oggi = chiaveGiorno(new Date());
