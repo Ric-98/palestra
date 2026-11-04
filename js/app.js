@@ -49,7 +49,7 @@ function nuovaVersionePronta(worker) {
 
 async function registraServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  const avevaController = !!navigator.serviceWorker.controller;
+  let avevaController = !!navigator.serviceWorker.controller;
   try {
     swReg = await navigator.serviceWorker.register('sw.js');
     if (swReg.waiting && avevaController) nuovaVersionePronta(swReg.waiting);
@@ -61,7 +61,7 @@ async function registraServiceWorker() {
       });
     });
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!avevaController) return; // prima installazione: niente ricarica
+      if (!avevaController) { avevaController = true; return; } // prima installazione: niente ricarica
       if (ricaricando) return;
       ricaricando = true;
       location.reload();
