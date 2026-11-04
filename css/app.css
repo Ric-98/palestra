@@ -467,3 +467,120 @@ details summary::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .benvenuto.on .bv-figura, .benvenuto.on .bv-riga, .benvenuto.on .bv-chiudi { animation: none; opacity: 1; transform: none; }
 }
+
+/* =====================================================================
+   Raffinamento: tipografia più fine, pesi diversi, grigi, aria tra gli elementi
+   ===================================================================== */
+:root {
+  --text-2: #8e8e93;
+  --text-3: #636366;
+  --line: rgba(255,255,255,.08);
+  --radius: 14px;
+}
+body { font-size: 16px; letter-spacing: -0.01em; }
+.view { padding-top: calc(var(--safe-top) + 16px); }
+.page-head { margin: 4px 0 20px; }
+.page-title { font-size: 30px; font-weight: 700; letter-spacing: -0.6px; }
+.section-title { font-size: 17px; font-weight: 600; margin: 28px 0 12px; letter-spacing: -0.2px; }
+.muted { color: var(--text-2); }
+.small { font-size: 13px; }
+.stack { gap: 10px; }
+.grid-2 { gap: 10px; }
+
+/* Card e liste */
+.card { padding: 14px 16px; }
+.card + .card { margin-top: 10px; }
+.card-title { font-size: 16px; font-weight: 600; margin: 0 0 3px; letter-spacing: -0.2px; }
+.card-sub { font-size: 13.5px; color: var(--text-2); line-height: 1.4; }
+.list-item { min-height: 52px; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+.list-item .li-title { font-size: 16px; font-weight: 500; }
+.list-item .li-sub { font-size: 13px; color: var(--text-2); margin-top: 1px; }
+.list-item .li-icon { width: 26px; height: 26px; }
+.list-item .li-icon svg { width: 21px; height: 21px; }
+.list-item .li-right svg { width: 18px; height: 18px; color: var(--text-3); }
+
+/* Bottoni, tessere, pillole */
+.btn { min-height: 44px; font-size: 15px; font-weight: 600; border-radius: 12px; }
+.btn.small { min-height: 34px; font-size: 14px; }
+.btn.ghost { font-weight: 500; }
+.tile { padding: 16px; font-size: 15px; font-weight: 500; gap: 10px; }
+.tile svg { width: 22px; height: 22px; color: var(--text); }
+.pill { font-size: 13px; font-weight: 500; padding: 7px 11px; }
+.pill svg { width: 16px; height: 16px; }
+.chip { font-size: 14px; font-weight: 500; padding: 8px 12px; }
+.chip b { font-weight: 600; }
+.badge { font-size: 12px; font-weight: 500; }
+.tag-mod, .tag-ss { font-size: 11px; font-weight: 600; letter-spacing: .2px; }
+.icon-btn { width: 40px; height: 40px; }
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* Tab bar */
+.tab { font-size: 11px; font-weight: 500; letter-spacing: .1px; }
+.tab svg { width: 24px; height: 24px; }
+
+/* Profilo */
+.avatar { width: 76px; height: 76px; font-size: 36px; font-weight: 600; }
+.profile-name { font-size: 20px; font-weight: 600; }
+.profile-stats { gap: 22px; }
+.profile-stats div { font-size: 12.5px; }
+.profile-stats strong { font-size: 18px; font-weight: 600; }
+.card.stat span { font-size: 12.5px; }
+.card.stat strong { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+.mini-stats div { font-size: 12.5px; }
+.mini-stats strong { font-size: 16px; font-weight: 600; }
+.select { font-size: 14px; font-weight: 500; padding: 7px 10px; }
+.g-asse { font-size: 10.5px; }
+
+/* Registro allenamento */
+.allena-title { font-size: 16px; font-weight: 600; }
+.allena-stats { gap: 22px; padding: 4px 4px 10px; }
+.allena-stats div { font-size: 12.5px; }
+.allena-stats strong { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+.ex-card { padding: 14px 12px 12px; margin-bottom: 10px; }
+.ex-name { font-size: 16.5px; font-weight: 600; letter-spacing: -0.2px; }
+.ex-tools { margin: 8px 0 4px; }
+.ex-note { font-size: 13px; }
+.set-row.head { font-size: 10.5px; letter-spacing: .5px; color: var(--text-3); }
+.set-num { font-size: 14px; font-weight: 600; height: 38px; }
+.set-prev { font-size: 12.5px; }
+.set-in { height: 38px; font-size: 16px; font-weight: 600; }
+.set-in::placeholder { font-weight: 400; }
+.set-rpe, .set-check { height: 38px; }
+.set-nota { font-size: 12px; }
+.plan-row { font-size: 15px; padding: 7px 0; }
+.plan-row.head { font-size: 10.5px; letter-spacing: .5px; }
+.timer-time { font-size: 28px; font-weight: 600; }
+.timer-btn { font-size: 14px; font-weight: 500; }
+
+/* Alimentazione */
+.riga-tipo { font-size: 11px; letter-spacing: .5px; color: var(--text-3); margin-bottom: 6px; }
+.riga-pasto { padding: 10px 0; }
+.voce { font-size: 15px; padding: 3px 0; }
+.voce-q { font-weight: 600; }
+.voce-cotto { font-size: 13px; }
+.segmented button { font-size: 14px; font-weight: 500; min-height: 36px; }
+.risultato-g { font-size: 38px; font-weight: 700; letter-spacing: -1px; }
+.input { font-size: 16px; padding: 11px 14px; }
+.input.grande { font-size: 26px; font-weight: 600; }
+.tab-nome { font-size: 14.5px; }
+.tab-fattori { font-size: 12.5px; }
+
+/* Fogli, scelte, calendario, stato vuoto */
+.sheet h3 { font-size: 18px; font-weight: 600; }
+.sheet p { font-size: 14px; }
+.scelta { font-size: 16px; font-weight: 400; padding: 13px 16px; }
+.lista-gruppo { font-size: 11px; letter-spacing: .5px; }
+.cal-giorno { font-size: 14px; }
+.cal-intest { font-size: 11px; }
+.empty h3 { font-size: 18px; font-weight: 600; }
+.empty p { font-size: 14px; }
+.steps { font-size: 14px; }
+.toast { font-size: 14px; }
+.update-banner { font-size: 14px; }
+
+/* Saluto */
+.bv-riga { font-size: 20px; font-weight: 600; }
+.bv-2 { font-size: 23px; font-weight: 600; }
+.bv-3 { font-size: 17px; font-weight: 400; }
+.riga-tipo .muted { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.set-row.head span:nth-child(2) { padding-left: 2px; }
