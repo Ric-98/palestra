@@ -42,6 +42,7 @@ const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', modifica: 'a
 let smonta = null;
 
 async function avvia() {
+  avviaBenvenuto(); // prima di tutto, così non si vede la schermata sotto
   try {
     await caricaDati();
     await caricaStoricoIncluso();
@@ -63,7 +64,6 @@ async function avvia() {
     if (typeof esito === 'function') smonta = esito;
     window.scrollTo(0, 0);
   });
-  avviaBenvenuto();
 }
 
 richiediPersistenza();
