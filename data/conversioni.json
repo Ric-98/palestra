@@ -1,73 +1,583 @@
 {
-  "fonte": "Tabella di conversione da cibi crudi a cotti (bollitura e arrosto) fornita dal coach",
-  "nota": "I fattori sono valori medi usati in dietetica: il peso reale dipende da tempo di cottura, taglio e quantità d'acqua. Peso cotto = peso crudo × fattore.",
-  "metodi": { "bollito": "Bollitura", "arrosto": "Arrosto" },
-  "alimenti": [
-    { "id": "pasta-corta", "nome": "Pasta di semola corta", "categoria": "Cereali e derivati", "bollito": 2.00 },
-    { "id": "pasta-lunga", "nome": "Pasta di semola lunga", "categoria": "Cereali e derivati", "bollito": 2.40 },
-    { "id": "pasta-uovo", "nome": "Pasta all'uovo secca", "categoria": "Cereali e derivati", "bollito": 3.00 },
-    { "id": "riso", "nome": "Riso", "categoria": "Cereali e derivati", "bollito": 2.50 },
-    { "id": "tortellini", "nome": "Tortellini e ravioli freschi", "categoria": "Cereali e derivati", "bollito": 2.00 },
-
-    { "id": "agretti", "nome": "Agretti", "categoria": "Verdure e ortaggi", "bollito": 0.80 },
-    { "id": "asparagi", "nome": "Asparagi", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "bieta", "nome": "Bieta", "categoria": "Verdure e ortaggi", "bollito": 0.80 },
-    { "id": "broccoletti-testa", "nome": "Broccoletti a testa", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "broccoletti-rapa", "nome": "Broccoletti di rapa", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "carciofi", "nome": "Carciofi", "categoria": "Verdure e ortaggi", "bollito": 0.75 },
-    { "id": "cardi", "nome": "Cardi", "categoria": "Verdure e ortaggi", "bollito": 0.60 },
-    { "id": "carote", "nome": "Carote", "categoria": "Verdure e ortaggi", "bollito": 0.85 },
-    { "id": "cavolfiore", "nome": "Cavolfiore", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "cavoli-bruxelles", "nome": "Cavoli di Bruxelles", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "cavolo-broccolo", "nome": "Cavolo broccolo verde ramoso", "categoria": "Verdure e ortaggi", "bollito": 0.60 },
-    { "id": "cavolo-cappuccio", "nome": "Cavolo cappuccio verde", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "cavolo-verza", "nome": "Cavolo verza", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "cicoria-campo", "nome": "Cicoria di campo", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "cicoria-taglio", "nome": "Cicoria di taglio coltivata", "categoria": "Verdure e ortaggi", "bollito": 0.80 },
-    { "id": "cipolle", "nome": "Cipolle", "categoria": "Verdure e ortaggi", "bollito": 0.70 },
-    { "id": "finocchi", "nome": "Finocchi", "categoria": "Verdure e ortaggi", "bollito": 0.85 },
-    { "id": "funghi", "nome": "Funghi", "categoria": "Verdure e ortaggi", "bollito": 0.60, "arrosto": 0.40 },
-    { "id": "melanzane", "nome": "Melanzane", "categoria": "Verdure e ortaggi", "arrosto": 0.40 },
-    { "id": "patata-buccia", "nome": "Patata con buccia", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "patata-pelata", "nome": "Patata pelata", "categoria": "Verdure e ortaggi", "bollito": 0.85 },
-    { "id": "peperoni", "nome": "Peperoni", "categoria": "Verdure e ortaggi", "arrosto": 0.80 },
-    { "id": "porri", "nome": "Porri", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "radicchio", "nome": "Radicchio", "categoria": "Verdure e ortaggi", "arrosto": 0.80 },
-    { "id": "rape", "nome": "Rape", "categoria": "Verdure e ortaggi", "bollito": 0.90 },
-    { "id": "spinaci", "nome": "Spinaci", "categoria": "Verdure e ortaggi", "bollito": 0.80 },
-    { "id": "topinambur", "nome": "Topinambur", "categoria": "Verdure e ortaggi", "bollito": 1.00 },
-    { "id": "zucchine-zucca", "nome": "Zucchine e zucca", "categoria": "Verdure e ortaggi", "bollito": 0.90, "arrosto": 0.40 },
-
-    { "id": "fagiolini", "nome": "Fagiolini", "categoria": "Legumi freschi", "bollito": 0.95 },
-    { "id": "fave", "nome": "Fave", "categoria": "Legumi freschi", "bollito": 0.80 },
-    { "id": "piselli", "nome": "Piselli", "categoria": "Legumi freschi", "bollito": 0.87 },
-
-    { "id": "ceci", "nome": "Ceci", "categoria": "Legumi secchi", "bollito": 3.00 },
-    { "id": "fagioli", "nome": "Fagioli", "categoria": "Legumi secchi", "bollito": 2.50 },
-    { "id": "lenticchie", "nome": "Lenticchie", "categoria": "Legumi secchi", "bollito": 2.50 },
-
-    { "id": "bovino-magro", "nome": "Bovino adulto magro", "categoria": "Carne", "bollito": 0.65, "arrosto": 0.60 },
-    { "id": "bovino-fettina", "nome": "Bovino adulto fettina", "categoria": "Carne", "arrosto": 0.75 },
-    { "id": "pollo-petto", "nome": "Pollo (petto)", "categoria": "Carne", "bollito": 0.90, "arrosto": 0.90 },
-    { "id": "pollo-coscio", "nome": "Pollo (coscio)", "categoria": "Carne", "bollito": 0.76, "arrosto": 0.80 },
-    { "id": "tacchino-petto", "nome": "Tacchino (petto)", "categoria": "Carne", "bollito": 1.00, "arrosto": 0.90 },
-    { "id": "tacchino-coscio", "nome": "Tacchino (coscio)", "categoria": "Carne", "bollito": 0.70, "arrosto": 0.80 },
-
-    { "id": "alici", "nome": "Alici", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.65 },
-    { "id": "cefalo", "nome": "Cefalo", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.75 },
-    { "id": "cernia", "nome": "Cernia", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.80 },
-    { "id": "dentice", "nome": "Dentice", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.75 },
-    { "id": "merluzzo", "nome": "Merluzzo", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.70 },
-    { "id": "orata", "nome": "Orata", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.70 },
-    { "id": "sgombro", "nome": "Sgombro", "categoria": "Pesce fresco", "bollito": 0.65, "arrosto": 0.70 },
-    { "id": "sogliola-rombo", "nome": "Sogliola o rombo", "categoria": "Pesce fresco", "bollito": 0.80, "arrosto": 0.70 },
-    { "id": "spigola", "nome": "Spigola", "categoria": "Pesce fresco", "bollito": 0.85, "arrosto": 0.70 },
-    { "id": "tonno-pesce-spada", "nome": "Tonno fresco o pesce spada", "categoria": "Pesce fresco", "bollito": 0.80, "arrosto": 0.70 },
-
-    { "id": "surg-cernia", "nome": "Cernia (surgelata)", "categoria": "Pesce surgelato", "bollito": 0.80, "arrosto": 0.80 },
-    { "id": "surg-dentice", "nome": "Dentice (surgelato)", "categoria": "Pesce surgelato", "bollito": 0.80, "arrosto": 0.75 },
-    { "id": "surg-platessa", "nome": "Filetti di platessa (surgelati)", "categoria": "Pesce surgelato", "bollito": 0.70, "arrosto": 0.70 },
-    { "id": "surg-merluzzo", "nome": "Merluzzo (surgelato)", "categoria": "Pesce surgelato", "bollito": 0.80, "arrosto": 0.70 },
-    { "id": "surg-spigola-orata", "nome": "Spigola o orata (surgelata)", "categoria": "Pesce surgelato", "bollito": 0.80, "arrosto": 0.75 }
-  ]
+ "fonte": "Tabella di conversione da cibi crudi a cotti (bollitura e arrosto) fornita dal coach",
+ "nota": "I fattori sono valori medi usati in dietetica: il peso reale dipende da tempo di cottura, taglio e quantità d'acqua. Peso cotto = peso crudo × fattore.",
+ "metodi": {
+  "bollito": "Bollito",
+  "vapore": "Vapore",
+  "padella": "Padella con olio",
+  "arrosto": "Arrosto",
+  "microonde": "Microonde"
+ },
+ "alimenti": [
+  {
+   "id": "pasta-corta",
+   "nome": "Pasta di semola corta",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "pasta-lunga",
+   "nome": "Pasta di semola lunga",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.4,
+   "fonte": "coach"
+  },
+  {
+   "id": "pasta-uovo",
+   "nome": "Pasta all'uovo secca",
+   "categoria": "Cereali e derivati",
+   "bollito": 3.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "riso",
+   "nome": "Riso",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.5,
+   "fonte": "coach"
+  },
+  {
+   "id": "tortellini",
+   "nome": "Tortellini e ravioli freschi",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "agretti",
+   "nome": "Agretti",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "asparagi",
+   "nome": "Asparagi",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "bieta",
+   "nome": "Bieta",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "broccoletti-testa",
+   "nome": "Broccoletti a testa",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "broccoletti-rapa",
+   "nome": "Broccoletti di rapa",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "carciofi",
+   "nome": "Carciofi",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "cardi",
+   "nome": "Cardi",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.6,
+   "fonte": "coach"
+  },
+  {
+   "id": "carote",
+   "nome": "Carote",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.85,
+   "fonte": "coach"
+  },
+  {
+   "id": "cavolfiore",
+   "nome": "Cavolfiore",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "cavoli-bruxelles",
+   "nome": "Cavoli di Bruxelles",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "cavolo-broccolo",
+   "nome": "Cavolo broccolo verde ramoso",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.6,
+   "fonte": "coach"
+  },
+  {
+   "id": "cavolo-cappuccio",
+   "nome": "Cavolo cappuccio verde",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "cavolo-verza",
+   "nome": "Cavolo verza",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "cicoria-campo",
+   "nome": "Cicoria di campo",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "cicoria-taglio",
+   "nome": "Cicoria di taglio coltivata",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "cipolle",
+   "nome": "Cipolle",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "finocchi",
+   "nome": "Finocchi",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.85,
+   "fonte": "coach"
+  },
+  {
+   "id": "funghi",
+   "nome": "Funghi",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.6,
+   "arrosto": 0.4,
+   "fonte": "coach"
+  },
+  {
+   "id": "melanzane",
+   "nome": "Melanzane",
+   "categoria": "Verdure e ortaggi",
+   "arrosto": 0.4,
+   "fonte": "coach"
+  },
+  {
+   "id": "patata-buccia",
+   "nome": "Patata con buccia",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "patata-pelata",
+   "nome": "Patata pelata",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.85,
+   "fonte": "coach"
+  },
+  {
+   "id": "peperoni",
+   "nome": "Peperoni",
+   "categoria": "Verdure e ortaggi",
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "porri",
+   "nome": "Porri",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "radicchio",
+   "nome": "Radicchio",
+   "categoria": "Verdure e ortaggi",
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "rape",
+   "nome": "Rape",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "spinaci",
+   "nome": "Spinaci",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "topinambur",
+   "nome": "Topinambur",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 1.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "zucchine-zucca",
+   "nome": "Zucchine e zucca",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.9,
+   "arrosto": 0.4,
+   "fonte": "coach"
+  },
+  {
+   "id": "fagiolini",
+   "nome": "Fagiolini",
+   "categoria": "Legumi freschi",
+   "bollito": 0.95,
+   "fonte": "coach"
+  },
+  {
+   "id": "fave",
+   "nome": "Fave",
+   "categoria": "Legumi freschi",
+   "bollito": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "piselli",
+   "nome": "Piselli",
+   "categoria": "Legumi freschi",
+   "bollito": 0.87,
+   "fonte": "coach"
+  },
+  {
+   "id": "ceci",
+   "nome": "Ceci",
+   "categoria": "Legumi secchi",
+   "bollito": 3.0,
+   "fonte": "coach"
+  },
+  {
+   "id": "fagioli",
+   "nome": "Fagioli",
+   "categoria": "Legumi secchi",
+   "bollito": 2.5,
+   "fonte": "coach"
+  },
+  {
+   "id": "lenticchie",
+   "nome": "Lenticchie",
+   "categoria": "Legumi secchi",
+   "bollito": 2.5,
+   "fonte": "coach"
+  },
+  {
+   "id": "bovino-magro",
+   "nome": "Bovino adulto magro",
+   "categoria": "Carne",
+   "bollito": 0.65,
+   "arrosto": 0.6,
+   "fonte": "coach"
+  },
+  {
+   "id": "bovino-fettina",
+   "nome": "Bovino adulto fettina",
+   "categoria": "Carne",
+   "arrosto": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "pollo-petto",
+   "nome": "Pollo (petto)",
+   "categoria": "Carne",
+   "bollito": 0.9,
+   "arrosto": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "pollo-coscio",
+   "nome": "Pollo (coscio)",
+   "categoria": "Carne",
+   "bollito": 0.76,
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "tacchino-petto",
+   "nome": "Tacchino (petto)",
+   "categoria": "Carne",
+   "bollito": 1.0,
+   "arrosto": 0.9,
+   "fonte": "coach"
+  },
+  {
+   "id": "tacchino-coscio",
+   "nome": "Tacchino (coscio)",
+   "categoria": "Carne",
+   "bollito": 0.7,
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "alici",
+   "nome": "Alici",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.65,
+   "fonte": "coach"
+  },
+  {
+   "id": "cefalo",
+   "nome": "Cefalo",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "cernia",
+   "nome": "Cernia",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "dentice",
+   "nome": "Dentice",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "merluzzo",
+   "nome": "Merluzzo",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "orata",
+   "nome": "Orata",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "sgombro",
+   "nome": "Sgombro",
+   "categoria": "Pesce fresco",
+   "bollito": 0.65,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "sogliola-rombo",
+   "nome": "Sogliola o rombo",
+   "categoria": "Pesce fresco",
+   "bollito": 0.8,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "spigola",
+   "nome": "Spigola",
+   "categoria": "Pesce fresco",
+   "bollito": 0.85,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "tonno-pesce-spada",
+   "nome": "Tonno fresco o pesce spada",
+   "categoria": "Pesce fresco",
+   "bollito": 0.8,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "surg-cernia",
+   "nome": "Cernia (surgelata)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.8,
+   "arrosto": 0.8,
+   "fonte": "coach"
+  },
+  {
+   "id": "surg-dentice",
+   "nome": "Dentice (surgelato)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.8,
+   "arrosto": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "surg-platessa",
+   "nome": "Filetti di platessa (surgelati)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.7,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "surg-merluzzo",
+   "nome": "Merluzzo (surgelato)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.8,
+   "arrosto": 0.7,
+   "fonte": "coach"
+  },
+  {
+   "id": "surg-spigola-orata",
+   "nome": "Spigola o orata (surgelata)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.8,
+   "arrosto": 0.75,
+   "fonte": "coach"
+  },
+  {
+   "id": "cous-cous",
+   "nome": "Cous cous precotto",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.25,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "riso-basmati",
+   "nome": "Riso basmati",
+   "categoria": "Cereali e derivati",
+   "bollito": 3.0,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "riso-venere",
+   "nome": "Riso venere",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.1,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "farro-perlato",
+   "nome": "Farro perlato",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.28,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "orzo-perlato",
+   "nome": "Orzo perlato",
+   "categoria": "Cereali e derivati",
+   "bollito": 2.67,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "quinoa",
+   "nome": "Quinoa",
+   "categoria": "Cereali e derivati",
+   "bollito": 3.12,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "carne-rossa",
+   "nome": "Carne rossa (manzo, vitello, cavallo, maiale)",
+   "categoria": "Carne",
+   "bollito": 0.64,
+   "vapore": 0.63,
+   "padella": 0.79,
+   "arrosto": 0.8,
+   "microonde": 0.69,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "carne-bianca",
+   "nome": "Carne bianca (pollo, tacchino, coniglio)",
+   "categoria": "Carne",
+   "bollito": 0.83,
+   "vapore": 0.62,
+   "padella": 0.84,
+   "arrosto": 0.79,
+   "microonde": 0.76,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "pesce-fresco",
+   "nome": "Pesce fresco (salmone, pesce azzurro, orata...)",
+   "categoria": "Pesce fresco",
+   "bollito": 0.83,
+   "vapore": 0.84,
+   "padella": 0.64,
+   "arrosto": 0.72,
+   "microonde": 0.79,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "pesce-surgelato",
+   "nome": "Pesce surgelato (generico)",
+   "categoria": "Pesce surgelato",
+   "bollito": 0.85,
+   "vapore": 0.84,
+   "padella": 0.64,
+   "arrosto": 0.74,
+   "microonde": 0.79,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "molluschi",
+   "nome": "Molluschi",
+   "categoria": "Pesce fresco",
+   "padella": 0.4,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "verdure-media",
+   "nome": "Verdure (media di diversi tipi)",
+   "categoria": "Verdure e ortaggi",
+   "bollito": 0.87,
+   "padella": 0.53,
+   "arrosto": 0.65,
+   "microonde": 0.88,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "legumi-secchi-media",
+   "nome": "Legumi secchi (ceci, fagioli, lenticchie)",
+   "categoria": "Legumi secchi",
+   "bollito": 2.7,
+   "fonte": "larn2024"
+  },
+  {
+   "id": "legumi-freschi-media",
+   "nome": "Legumi freschi (fave, piselli)",
+   "categoria": "Legumi freschi",
+   "bollito": 0.88,
+   "fonte": "larn2024"
+  }
+ ],
+ "fonti": {
+  "coach": {
+   "nome": "Tabella di conversione del coach",
+   "dettaglio": "Tabella crudo/cotto per bollitura e arrosto fornita dal coach"
+  },
+  "larn2024": {
+   "nome": "SINU, LARN V Revisione 2024",
+   "dettaglio": "Standard quantitativi delle porzioni, Tabella 3: fattori di conversione crudo/cotto per gruppo alimentare e metodo di cottura",
+   "url": "https://sinu.it/wp-content/uploads/2025/01/Standard-Quantitativi-delle-Porzioni.pdf"
+  }
+ }
 }

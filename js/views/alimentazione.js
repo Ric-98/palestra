@@ -17,7 +17,7 @@ export function renderAlimentazione(el) {
 
     ${d ? html`
       <h2 class="section-title">${d.nome}</h2>
-      <p class="muted small" style="margin:-6px 4px 12px">Dal ${formattaData(new Date(d.dal))}. ${d.legenda || ''}</p>
+      <p class="muted small" style="margin:-6px 4px 12px">Dal ${formattaData(new Date(d.dal))}</p>
       <div class="list">
         ${(d.pasti || []).map((p) => html`
           <button type="button" class="list-item" data-pasto="${p.id}">

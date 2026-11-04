@@ -397,3 +397,8 @@ details summary::-webkit-details-marker { display: none; }
 .tab-row span:nth-child(n+2) { text-align: right; font-variant-numeric: tabular-nums; }
 .tab-row.head { border-top: 0; font-size: 11px; text-transform: uppercase; color: var(--text-3); font-weight: 600; padding: 4px 0; }
 .tab-row.on span:first-child { color: var(--accent); font-weight: 600; }
+.tab-riga { display: block; width: 100%; border: 0; background: none; color: var(--text); text-align: left; padding: 9px 0; border-top: 1px solid var(--line); }
+.tab-nome { display: block; font-size: 15px; }
+.tab-fattori { display: block; font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.tab-riga.on .tab-nome { color: var(--accent); font-weight: 600; }
+.chip .muted { color: inherit; opacity: .75; }

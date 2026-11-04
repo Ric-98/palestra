@@ -73,7 +73,8 @@ export function dieta(id) { return (diete || []).find((d) => d.id === id) || nul
 // ---- Conversioni crudo/cotto ----
 export function tabellaConversioni() { return conversioni || { alimenti: [], metodi: {} }; }
 export function alimentoConv(id) { return convPerId.get(id) || null; }
-export const METODI = ['bollito', 'arrosto'];
+export const METODI = ['bollito', 'vapore', 'padella', 'arrosto', 'microonde'];
+export function fonteConv(id) { const f = (conversioni && conversioni.fonti) || {}; return f[id] || null; }
 
 // Converte un peso. verso: 'crudo-cotto' (default) oppure 'cotto-crudo'.
 // Se il metodo scelto non esiste per l'alimento usa l'altro e lo dice nel risultato.

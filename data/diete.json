@@ -4,36 +4,101 @@
     "nome": "Dieta del coach",
     "dal": "2026-11-04",
     "attiva": true,
-    "legenda": "\"-\" vuol dire che va mangiato, \"/\" vuol dire che scegli uno tra quelli elencati.",
     "pasti": [
       {
         "id": "pasto1",
         "nome": "Pasto 1",
         "quando": "Colazione",
         "righe": [
-          { "tipo": "Carboidrati", "scegli": true, "opzioni": [
-            { "g": 50, "nome": "corn flakes" },
-            { "g": 50, "nome": "crema di riso" },
-            { "g": 50, "nome": "gallette", "nota": "del cereale che preferisci" },
-            { "g": 60, "nome": "avena", "nota": "va bene anche la farina aromatizzata" }
-          ] },
-          { "tipo": "Proteine", "scegli": true, "opzioni": [
-            { "g": 250, "nome": "albume in brick", "nota": "da cuocere" },
-            { "g": 250, "nome": "yogurt greco 0%", "nota": "anche aromatizzato" },
-            { "g": 100, "nome": "bresaola" },
-            { "g": 100, "nome": "fesa di tacchino" },
-            { "g": 30, "nome": "proteine in polvere isolate o idrolizzate" }
-          ] },
-          { "tipo": "Grassi", "scegli": true, "opzioni": [
-            { "g": 20, "nome": "burro di arachidi" },
-            { "g": 20, "nome": "mandorle" },
-            { "g": 20, "nome": "noci" },
-            { "g": 20, "nome": "nocciole" }
-          ] },
-          { "tipo": "Extra", "scegli": false, "opzioni": [
-            { "q": "200 ml", "nome": "latte senza lattosio 0% grassi (Zymil tappo verde)", "nota": "a piacere" },
-            { "g": 100, "nome": "frutti rossi" }
-          ] }
+          {
+            "tipo": "Carboidrati",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 50,
+                "nome": "corn flakes"
+              },
+              {
+                "g": 50,
+                "nome": "crema di riso"
+              },
+              {
+                "g": 50,
+                "nome": "gallette",
+                "nota": "del cereale che preferisci"
+              },
+              {
+                "g": 60,
+                "nome": "avena",
+                "nota": "va bene anche la farina aromatizzata"
+              }
+            ]
+          },
+          {
+            "tipo": "Proteine",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 250,
+                "nome": "albume in brick",
+                "nota": "da cuocere"
+              },
+              {
+                "g": 250,
+                "nome": "yogurt greco 0%",
+                "nota": "anche aromatizzato"
+              },
+              {
+                "g": 100,
+                "nome": "bresaola"
+              },
+              {
+                "g": 100,
+                "nome": "fesa di tacchino"
+              },
+              {
+                "g": 30,
+                "nome": "proteine in polvere isolate o idrolizzate"
+              }
+            ]
+          },
+          {
+            "tipo": "Grassi",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 20,
+                "nome": "burro di arachidi"
+              },
+              {
+                "g": 20,
+                "nome": "mandorle"
+              },
+              {
+                "g": 20,
+                "nome": "noci"
+              },
+              {
+                "g": 20,
+                "nome": "nocciole"
+              }
+            ]
+          },
+          {
+            "tipo": "Extra",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "200 ml",
+                "nome": "latte senza lattosio 0% grassi (Zymil tappo verde)",
+                "nota": "a piacere"
+              },
+              {
+                "g": 100,
+                "nome": "frutti rossi"
+              }
+            ]
+          }
         ]
       },
       {
@@ -41,30 +106,108 @@
         "nome": "Pasto 2",
         "quando": "Pranzo",
         "righe": [
-          { "tipo": "Carboidrati", "scegli": true, "opzioni": [
-            { "g": 100, "nome": "riso", "conv": "riso" },
-            { "g": 100, "nome": "pasta", "conv": "pasta-corta" },
-            { "g": 100, "nome": "cous cous" },
-            { "g": 100, "nome": "gallette" },
-            { "g": 400, "nome": "patate", "conv": "patata-pelata" }
-          ] },
-          { "tipo": "Proteine", "scegli": true, "opzioni": [
-            { "g": 150, "nome": "petto di pollo", "conv": "pollo-petto" },
-            { "g": 150, "nome": "petto di tacchino", "nota": "no affettato", "conv": "tacchino-petto" },
-            { "g": 150, "nome": "tonno fresco o al naturale", "conv": "tonno-pesce-spada" },
-            { "g": 150, "nome": "vitello magro", "conv": "bovino-magro" },
-            { "g": 150, "nome": "cavallo" },
-            { "g": 150, "nome": "salmone fresco" },
-            { "g": 150, "nome": "pesce azzurro" },
-            { "g": 200, "nome": "pesce bianco", "conv": "merluzzo" },
-            { "q": "2 uova intere + 250 g albume", "nome": "uova e albume" }
-          ] },
-          { "tipo": "Verdure", "scegli": false, "opzioni": [
-            { "q": "a piacere", "nome": "verdure", "nota": "no patate, lenticchie, ceci, fagioli" }
-          ] },
-          { "tipo": "Grassi", "scegli": false, "opzioni": [
-            { "q": "1 cucchiaio", "nome": "olio EVO" }
-          ] }
+          {
+            "tipo": "Carboidrati",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 100,
+                "nome": "riso",
+                "conv": "riso"
+              },
+              {
+                "g": 100,
+                "nome": "pasta",
+                "conv": "pasta-corta"
+              },
+              {
+                "g": 100,
+                "nome": "cous cous",
+                "conv": "cous-cous"
+              },
+              {
+                "g": 100,
+                "nome": "gallette"
+              },
+              {
+                "g": 400,
+                "nome": "patate",
+                "conv": "patata-pelata"
+              }
+            ]
+          },
+          {
+            "tipo": "Proteine",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 150,
+                "nome": "petto di pollo",
+                "conv": "pollo-petto"
+              },
+              {
+                "g": 150,
+                "nome": "petto di tacchino",
+                "nota": "no affettato",
+                "conv": "tacchino-petto"
+              },
+              {
+                "g": 150,
+                "nome": "tonno fresco o al naturale",
+                "conv": "tonno-pesce-spada"
+              },
+              {
+                "g": 150,
+                "nome": "vitello magro",
+                "conv": "bovino-magro"
+              },
+              {
+                "g": 150,
+                "nome": "cavallo",
+                "conv": "carne-rossa"
+              },
+              {
+                "g": 150,
+                "nome": "salmone fresco",
+                "conv": "pesce-fresco"
+              },
+              {
+                "g": 150,
+                "nome": "pesce azzurro",
+                "conv": "pesce-fresco"
+              },
+              {
+                "g": 200,
+                "nome": "pesce bianco",
+                "conv": "merluzzo"
+              },
+              {
+                "q": "2 uova intere + 250 g albume",
+                "nome": "uova e albume"
+              }
+            ]
+          },
+          {
+            "tipo": "Verdure",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "a piacere",
+                "nome": "verdure",
+                "nota": "no patate, lenticchie, ceci, fagioli"
+              }
+            ]
+          },
+          {
+            "tipo": "Grassi",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "1 cucchiaio",
+                "nome": "olio EVO"
+              }
+            ]
+          }
         ]
       },
       {
@@ -72,23 +215,69 @@
         "nome": "Pasto 3",
         "quando": "Spuntino",
         "righe": [
-          { "tipo": "Proteine", "scegli": true, "opzioni": [
-            { "g": 100, "nome": "bresaola" },
-            { "g": 100, "nome": "fesa di tacchino" },
-            { "g": 250, "nome": "albume" },
-            { "g": 30, "nome": "proteine in polvere isolate o idrolizzate" },
-            { "g": 100, "nome": "petto di pollo", "conv": "pollo-petto" }
-          ] },
-          { "tipo": "Grassi", "scegli": true, "opzioni": [
-            { "g": 20, "nome": "burro di arachidi" },
-            { "g": 20, "nome": "mandorle" },
-            { "g": 20, "nome": "noci" },
-            { "g": 20, "nome": "nocciole" },
-            { "g": 10, "nome": "olio EVO" }
-          ] },
-          { "tipo": "Frutta", "scegli": false, "opzioni": [
-            { "q": "1", "nome": "banana" }
-          ] }
+          {
+            "tipo": "Proteine",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 100,
+                "nome": "bresaola"
+              },
+              {
+                "g": 100,
+                "nome": "fesa di tacchino"
+              },
+              {
+                "g": 250,
+                "nome": "albume"
+              },
+              {
+                "g": 30,
+                "nome": "proteine in polvere isolate o idrolizzate"
+              },
+              {
+                "g": 100,
+                "nome": "petto di pollo",
+                "conv": "pollo-petto"
+              }
+            ]
+          },
+          {
+            "tipo": "Grassi",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 20,
+                "nome": "burro di arachidi"
+              },
+              {
+                "g": 20,
+                "nome": "mandorle"
+              },
+              {
+                "g": 20,
+                "nome": "noci"
+              },
+              {
+                "g": 20,
+                "nome": "nocciole"
+              },
+              {
+                "g": 10,
+                "nome": "olio EVO"
+              }
+            ]
+          },
+          {
+            "tipo": "Frutta",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "1",
+                "nome": "banana"
+              }
+            ]
+          }
         ]
       },
       {
@@ -96,30 +285,108 @@
         "nome": "Pasto 4",
         "quando": "Cena",
         "righe": [
-          { "tipo": "Carboidrati", "scegli": true, "opzioni": [
-            { "g": 100, "nome": "riso", "conv": "riso" },
-            { "g": 100, "nome": "pasta", "conv": "pasta-corta" },
-            { "g": 100, "nome": "cous cous" },
-            { "g": 100, "nome": "gallette" },
-            { "g": 400, "nome": "patate", "conv": "patata-pelata" }
-          ] },
-          { "tipo": "Proteine", "scegli": true, "opzioni": [
-            { "g": 150, "nome": "petto di pollo", "conv": "pollo-petto" },
-            { "g": 150, "nome": "petto di tacchino", "nota": "no affettato", "conv": "tacchino-petto" },
-            { "g": 150, "nome": "tonno fresco o al naturale", "conv": "tonno-pesce-spada" },
-            { "g": 150, "nome": "vitello magro", "conv": "bovino-magro" },
-            { "g": 150, "nome": "cavallo" },
-            { "g": 150, "nome": "salmone fresco" },
-            { "g": 150, "nome": "pesce azzurro" },
-            { "g": 200, "nome": "pesce bianco", "conv": "merluzzo" },
-            { "q": "2 uova intere + 250 g albume", "nome": "uova e albume" }
-          ] },
-          { "tipo": "Verdure", "scegli": false, "opzioni": [
-            { "q": "a piacere", "nome": "verdure", "nota": "no patate, lenticchie, ceci, fagioli" }
-          ] },
-          { "tipo": "Grassi", "scegli": false, "opzioni": [
-            { "q": "1 cucchiaio", "nome": "olio EVO" }
-          ] }
+          {
+            "tipo": "Carboidrati",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 100,
+                "nome": "riso",
+                "conv": "riso"
+              },
+              {
+                "g": 100,
+                "nome": "pasta",
+                "conv": "pasta-corta"
+              },
+              {
+                "g": 100,
+                "nome": "cous cous",
+                "conv": "cous-cous"
+              },
+              {
+                "g": 100,
+                "nome": "gallette"
+              },
+              {
+                "g": 400,
+                "nome": "patate",
+                "conv": "patata-pelata"
+              }
+            ]
+          },
+          {
+            "tipo": "Proteine",
+            "scegli": true,
+            "opzioni": [
+              {
+                "g": 150,
+                "nome": "petto di pollo",
+                "conv": "pollo-petto"
+              },
+              {
+                "g": 150,
+                "nome": "petto di tacchino",
+                "nota": "no affettato",
+                "conv": "tacchino-petto"
+              },
+              {
+                "g": 150,
+                "nome": "tonno fresco o al naturale",
+                "conv": "tonno-pesce-spada"
+              },
+              {
+                "g": 150,
+                "nome": "vitello magro",
+                "conv": "bovino-magro"
+              },
+              {
+                "g": 150,
+                "nome": "cavallo",
+                "conv": "carne-rossa"
+              },
+              {
+                "g": 150,
+                "nome": "salmone fresco",
+                "conv": "pesce-fresco"
+              },
+              {
+                "g": 150,
+                "nome": "pesce azzurro",
+                "conv": "pesce-fresco"
+              },
+              {
+                "g": 200,
+                "nome": "pesce bianco",
+                "conv": "merluzzo"
+              },
+              {
+                "q": "2 uova intere + 250 g albume",
+                "nome": "uova e albume"
+              }
+            ]
+          },
+          {
+            "tipo": "Verdure",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "a piacere",
+                "nome": "verdure",
+                "nota": "no patate, lenticchie, ceci, fagioli"
+              }
+            ]
+          },
+          {
+            "tipo": "Grassi",
+            "scegli": false,
+            "opzioni": [
+              {
+                "q": "1 cucchiaio",
+                "nome": "olio EVO"
+              }
+            ]
+          }
         ],
         "nota": "Nei giorni in cui non ti alleni puoi sostituire la fonte di carboidrati con 100 g a crudo di ceci, fagioli o lenticchie: la quota proteica si dimezza, i grassi restano invariati."
       },
@@ -128,19 +395,46 @@
         "nome": "Post workout",
         "quando": "Appena finito l'allenamento",
         "righe": [
-          { "tipo": "Proteine", "scegli": false, "opzioni": [
-            { "g": 30, "nome": "proteine in polvere isolate o idrolizzate" }
-          ] }
+          {
+            "tipo": "Proteine",
+            "scegli": false,
+            "opzioni": [
+              {
+                "g": 30,
+                "nome": "proteine in polvere isolate o idrolizzate"
+              }
+            ]
+          }
         ],
         "nota": "Il pasto successivo dopo almeno 60 minuti."
       }
     ],
     "integrazione": [
-      { "q": "2 capsule", "nome": "multivitaminico", "quando": "a colazione" },
-      { "q": "2 capsule", "nome": "omega 3", "quando": "a colazione" },
-      { "q": "5 g", "nome": "creatina", "quando": "nel pasto post allenamento" },
-      { "q": "15 g", "nome": "BLP 99.9", "quando": "durante l'allenamento (intra workout)" },
-      { "q": "", "nome": "proteine in polvere isolate o idrolizzate", "quando": "utilizzabili come alternativa dove indicato" }
+      {
+        "q": "2 capsule",
+        "nome": "multivitaminico",
+        "quando": "a colazione"
+      },
+      {
+        "q": "2 capsule",
+        "nome": "omega 3",
+        "quando": "a colazione"
+      },
+      {
+        "q": "5 g",
+        "nome": "creatina",
+        "quando": "nel pasto post allenamento"
+      },
+      {
+        "q": "15 g",
+        "nome": "BLP 99.9",
+        "quando": "durante l'allenamento (intra workout)"
+      },
+      {
+        "q": "",
+        "nome": "proteine in polvere isolate o idrolizzate",
+        "quando": "utilizzabili come alternativa dove indicato"
+      }
     ],
     "regole": [
       "Acqua: circa 4-5 litri al giorno, anche durante l'allenamento.",
