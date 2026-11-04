@@ -1,5 +1,5 @@
 // Service worker: cache versionata dell'app, aggiornamento automatico.
-const VERSION = '2026-11-04.2119';
+const VERSION = '2026-11-04.2127';
 const CACHE = 'palestra-' + VERSION;
 const ASSETS = [
   './',
@@ -38,6 +38,7 @@ const ASSETS = [
   './data/schede.json',
   './data/diete.json',
   './data/conversioni.json',
+  './icons/bodybuilder.svg',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
