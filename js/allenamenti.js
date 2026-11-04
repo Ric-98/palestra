@@ -133,3 +133,103 @@ export function nomeEsercizioLog(e) {
   const cat = esercizio(e.exId);
   return cat ? cat.nome : (e.nome || e.exId);
 }
+
+// ---- Aggregazioni per statistiche ----
+export function repsTotali(a) {
+  let n = 0;
+  for (const e of a.esercizi || []) for (const s of e.serie || []) if (s.fatto) n += Number(s.reps) || 0;
+  return n;
+}
+
+// Ultime n settimane (lunedì-domenica), dalla più vecchia alla corrente
+export function perSettimana(nSettimane) {
+  const inizio = inizioSettimana();
+  inizio.setDate(inizio.getDate() - 7 * (nSettimane - 1));
+  const settimane = Array.from({ length: nSettimane }, (_, i) => {
+    const da = new Date(inizio); da.setDate(da.getDate() + 7 * i);
+    return { da, durataSec: 0, volume: 0, reps: 0, allenamenti: 0 };
+  });
+  for (const a of tutti()) {
+    const d = new Date(a.inizio);
+    if (d < inizio) continue;
+    const i = Math.floor((d - inizio) / (7 * 86400000));
+    if (i < 0 || i >= nSettimane) continue;
+    const st = statistiche(a);
+    settimane[i].durataSec += st.durataSec;
+    settimane[i].volume += st.volume;
+    settimane[i].reps += repsTotali(a);
+    settimane[i].allenamenti += 1;
+  }
+  return settimane;
+}
+
+export function perMese(nMesi) {
+  const oggi = new Date();
+  const mesi = [];
+  for (let i = nMesi - 1; i >= 0; i--) {
+    const d = new Date(oggi.getFullYear(), oggi.getMonth() - i, 1);
+    mesi.push({ anno: d.getFullYear(), mese: d.getMonth(), allenamenti: 0, durataSec: 0, volume: 0 });
+  }
+  for (const a of tutti()) {
+    const d = new Date(a.inizio);
+    const m = mesi.find((x) => x.anno === d.getFullYear() && x.mese === d.getMonth());
+    if (!m) continue;
+    const st = statistiche(a);
+    m.allenamenti++; m.durataSec += st.durataSec; m.volume += st.volume;
+  }
+  return mesi;
+}
+
+export function totali() {
+  let durataSec = 0, volume = 0, serie = 0, reps = 0;
+  const arr = tutti();
+  for (const a of arr) { const st = statistiche(a); durataSec += st.durataSec; volume += st.volume; serie += st.serie; reps += repsTotali(a); }
+  return { allenamenti: arr.length, durataSec, volume, serie, reps };
+}
+
+// Storico per esercizio: una voce per allenamento, dal più recente
+export function storicoEsercizio(exId) {
+  const out = [];
+  for (const a of tutti()) {
+    const e = (a.esercizi || []).find((x) => x.exId === exId);
+    if (!e) continue;
+    const fatte = (e.serie || []).filter((s) => s.fatto);
+    if (!fatte.length) continue;
+    const allenanti = fatte.filter((s) => s.tipo !== 'W' && s.kg);
+    const kgMax = allenanti.reduce((m, s) => Math.max(m, Number(s.kg)), 0);
+    const rmMax = allenanti.reduce((m, s) => Math.max(m, oneRm(Number(s.kg), Number(s.reps) || 0)), 0);
+    const volume = fatte.reduce((m, s) => m + (Number(s.kg) || 0) * (Number(s.reps) || 0), 0);
+    out.push({ id: a.id, titolo: a.titolo, data: a.inizio, serie: fatte, kgMax, rmMax, volume });
+  }
+  return out;
+}
+
+// Riepilogo di tutti gli esercizi fatti almeno una volta
+export function riepilogoEsercizi() {
+  const mappa = new Map();
+  for (const a of tutti()) {
+    for (const e of a.esercizi || []) {
+      const fatte = (e.serie || []).filter((s) => s.fatto);
+      if (!fatte.length) continue;
+      if (!mappa.has(e.exId)) mappa.set(e.exId, { exId: e.exId, nome: nomeEsercizioLog(e), sessioni: 0, ultima: a.inizio, kgMax: 0 });
+      const r = mappa.get(e.exId);
+      r.sessioni++;
+      if (new Date(a.inizio) > new Date(r.ultima)) r.ultima = a.inizio;
+      for (const s of fatte) if (s.tipo !== 'W' && s.kg) r.kgMax = Math.max(r.kgMax, Number(s.kg));
+    }
+  }
+  return Array.from(mappa.values()).sort((x, y) => new Date(y.ultima) - new Date(x.ultima));
+}
+
+export function allenamentiDelGiorno(d) {
+  const k = chiaveGiorno(d);
+  return tutti().filter((a) => chiaveGiorno(new Date(a.inizio)) === k);
+}
+export function chiaveGiorno(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+export function giorniAllenati() {
+  const set = new Map();
+  for (const a of tutti()) { const k = chiaveGiorno(new Date(a.inizio)); set.set(k, (set.get(k) || 0) + 1); }
+  return set;
+}

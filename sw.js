@@ -1,5 +1,5 @@
 // Service worker: cache versionata dell'app, aggiornamento automatico.
-const VERSION = '2026-11-04.2044';
+const VERSION = '2026-11-04.2055';
 const CACHE = 'palestra-' + VERSION;
 const ASSETS = [
   './',
@@ -17,6 +17,8 @@ const ASSETS = [
   './js/hevy.js',
   './js/storico-incluso.js',
   './js/timer.js',
+  './js/grafici.js',
+  './js/misure.js',
   './js/views/allenamento.js',
   './js/views/scheda.js',
   './js/views/allena.js',
@@ -25,6 +27,10 @@ const ASSETS = [
   './js/views/dieta.js',
   './js/views/convertitore.js',
   './js/views/profilo.js',
+  './js/views/statistiche.js',
+  './js/views/esercizi.js',
+  './js/views/misure.js',
+  './js/views/calendario.js',
   './data/esercizi.json',
   './data/storico-hevy.json',
   './data/schede.json',

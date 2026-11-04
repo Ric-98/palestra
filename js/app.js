@@ -10,6 +10,10 @@ import { renderAlimentazione } from './views/alimentazione.js';
 import { renderDieta } from './views/dieta.js';
 import { renderConvertitore } from './views/convertitore.js';
 import { renderProfilo } from './views/profilo.js';
+import { renderStatistiche } from './views/statistiche.js';
+import { renderEsercizi, renderEsercizio } from './views/esercizi.js';
+import { renderMisure } from './views/misure.js';
+import { renderCalendario } from './views/calendario.js';
 
 const view = document.getElementById('view');
 const tabs = Array.from(document.querySelectorAll('.tabbar .tab'));
@@ -25,8 +29,13 @@ route('/dieta/:id/:pasto', renderDieta);
 route('/convertitore', renderConvertitore);
 route('/convertitore/:alimento/:g', renderConvertitore);
 route('/profilo', renderProfilo);
+route('/statistiche', renderStatistiche);
+route('/esercizi', renderEsercizi);
+route('/esercizio/:id', renderEsercizio);
+route('/misure', renderMisure);
+route('/calendario', renderCalendario);
 
-const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', dieta: 'alimentazione', convertitore: 'alimentazione', profilo: 'profilo' };
+const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', dieta: 'alimentazione', convertitore: 'alimentazione', profilo: 'profilo', statistiche: 'profilo', esercizi: 'profilo', esercizio: 'profilo', misure: 'profilo', calendario: 'profilo' };
 let smonta = null;
 
 async function avvia() {

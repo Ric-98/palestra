@@ -5,6 +5,8 @@ import { controllaAggiornamenti } from '../app.js';
 import * as A from '../allenamenti.js';
 import { analizzaCsv, convertiHevy } from '../hevy.js';
 import { sbloccaAudio, suonaFineRiposo, avviaTimerIphone } from '../timer.js';
+import { vai } from '../router.js';
+import { bloccoGraficoSettimanale, collegaGraficoSettimanale } from './statistiche.js';
 
 function statistiche() {
   const allenamenti = A.tutti();
@@ -54,14 +56,15 @@ export function renderProfilo(el) {
       </div>
     </div>
 
+    <div class="card" style="margin-top:4px">${bloccoGraficoSettimanale(el, { compatto: true })}</div>
+
     <h2 class="section-title">Dashboard</h2>
     <div class="grid-2">
-      <button type="button" class="tile" disabled>${raw(icone.statistiche)}Statistiche</button>
-      <button type="button" class="tile" disabled>${raw(icone.esercizi)}Esercizi</button>
-      <button type="button" class="tile" disabled>${raw(icone.misure)}Misure</button>
-      <button type="button" class="tile" disabled>${raw(icone.calendario)}Calendario</button>
+      <button type="button" class="tile" data-vai="/statistiche">${raw(icone.statistiche)}Statistiche</button>
+      <button type="button" class="tile" data-vai="/esercizi">${raw(icone.esercizi)}Esercizi</button>
+      <button type="button" class="tile" data-vai="/misure">${raw(icone.misure)}Misure</button>
+      <button type="button" class="tile" data-vai="/calendario">${raw(icone.calendario)}Calendario</button>
     </div>
-    <p class="muted small" style="margin:8px 4px 0">Si attivano nello step 4.</p>
 
     <h2 class="section-title">Dati</h2>
     <div class="list">
@@ -130,6 +133,8 @@ export function renderProfilo(el) {
   `.toString();
 
   // --- eventi ---
+  collegaGraficoSettimanale(el, () => { const y = window.scrollY; renderProfilo(el); window.scrollTo(0, y); });
+  el.querySelectorAll('[data-vai]').forEach((b) => { b.onclick = () => vai(b.dataset.vai); });
   el.querySelector('#btn-nome').onclick = async () => {
     const v = await chiediTesto({ titolo: 'Il tuo nome', valore: imp.nome || '', placeholder: 'es. rico' });
     if (v === null) return;
