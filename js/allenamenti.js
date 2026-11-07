@@ -233,3 +233,19 @@ export function giorniAllenati() {
   for (const a of tutti()) { const k = chiaveGiorno(new Date(a.inizio)); set.set(k, (set.get(k) || 0) + 1); }
   return set;
 }
+
+// Prossimo giorno consigliato: il primo giorno della scheda non ancora fatto nel ciclo
+// corrente. Il ciclo si chiude quando sono stati fatti tutti i giorni o quando un giorno
+// si ripete.
+export function prossimoGiorno(schedaId, idsGiorni) {
+  if (!idsGiorni || !idsGiorni.length) return null;
+  const fatti = new Set();
+  for (const a of tutti()) {
+    if (a.schedaId !== schedaId || !idsGiorni.includes(a.giornoId)) continue;
+    if (fatti.has(a.giornoId)) break;
+    fatti.add(a.giornoId);
+    if (fatti.size === idsGiorni.length) break;
+  }
+  if (fatti.size >= idsGiorni.length) return idsGiorni[0];
+  return idsGiorni.find((id) => !fatti.has(id)) || idsGiorni[0];
+}

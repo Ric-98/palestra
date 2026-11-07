@@ -4,6 +4,7 @@ import { vai, indietro } from '../router.js';
 import { scheda, giorno, esercizio, espandiSerie } from '../dati.js';
 import * as A from '../allenamenti.js';
 import { inizia } from './allenamento.js';
+import { stimaDurataVoci } from '../corrente.js';
 
 export function renderGiorno(el, params) {
   const s = scheda(params.scheda);
@@ -17,7 +18,7 @@ export function renderGiorno(el, params) {
       <button type="button" class="btn ghost small" id="btn-modifica">Modifica</button>
     </header>
     <h1 class="page-title" style="font-size:26px">${g.nome}${g.modificato || g.aggiunto ? html` <span class="tag-mod">${g.aggiunto ? 'tuo' : 'modificato'}</span>` : ''}</h1>
-    <p class="muted small" style="margin:4px 0 16px">${s.nome}${g.voltePerSettimana ? ` · ${g.voltePerSettimana} volte a settimana` : ''}</p>
+    <p class="muted small" style="margin:4px 0 16px">${s.nome}${g.voltePerSettimana ? ` · ${g.voltePerSettimana} volte a settimana` : ''} · ${(g.esercizi || []).length} esercizi · durata stimata ≈ ${A.formattaDurata(stimaDurataVoci(g.esercizi))}</p>
     <button type="button" class="btn primary block" id="btn-inizia">Inizia allenamento</button>
 
     <h2 class="section-title">Esercizi</h2>
@@ -32,7 +33,7 @@ export function renderGiorno(el, params) {
             <div class="row between">
               <div>
                 <p class="card-title" style="color:var(--accent)">${cat.nome}</p>
-                <p class="card-sub">${cat.gruppo}${v.superset ? ` · Superserie ${v.superset}` : ''}${v.avvicinamento === false ? '' : ' · + 1 avvicinamento'}</p>
+                <p class="card-sub">${cat.gruppo}${v.superset ? ` · Superserie ${v.superset}` : ''}${v.avvicinamento === true ? ' · + 1 avvicinamento' : ''}</p>
               </div>
             </div>
             ${v.nota ? html`<div class="ex-note" style="margin-top:8px">${v.nota}</div>` : ''}

@@ -2,6 +2,7 @@
 import { html, raw, icone, conferma, chiediTesto, toast, formattaData } from '../ui.js';
 import { vai } from '../router.js';
 import * as C from '../corrente.js';
+import { stimaDurataVoci } from '../corrente.js';
 import * as A from '../allenamenti.js';
 import { schedaAttiva, tutteSchede, nomeEsercizio, haModifiche, ripristinaScheda, aggiungiGiorno } from '../dati.js';
 
@@ -47,11 +48,7 @@ export function renderAllenamento(el) {
   const archivio = tutteSchede().filter((x) => !x.attiva);
   // prossimo giorno consigliato: quello dopo l'ultimo fatto, in ordine di scheda
   let prossimo = null;
-  if (s && (s.giorni || []).length) {
-    const ids = s.giorni.map((g) => g.id);
-    const ultimoFatto = A.tutti().find((a) => a.schedaId === s.id && ids.includes(a.giornoId));
-    prossimo = ultimoFatto ? ids[(ids.indexOf(ultimoFatto.giornoId) + 1) % ids.length] : ids[0];
-  }
+  if (s && (s.giorni || []).length) prossimo = A.prossimoGiorno(s.id, s.giorni.map((g) => g.id));
 
   el.innerHTML = html`
     <header class="page-head">
@@ -78,6 +75,7 @@ export function renderAllenamento(el) {
             <button type="button" class="card-link" data-giorno="${g.id}">
               <p class="card-title">${g.nome}${g.id === prossimo ? html` <span class="tag-mod blu">prossimo</span>` : ''}${g.modificato || g.aggiunto ? html` <span class="tag-mod">${g.aggiunto ? 'tuo' : 'modificato'}</span>` : ''}</p>
               <p class="card-sub clamp-2">${anteprima(g)}</p>
+              <p class="card-sub" style="margin-top:4px">${(g.esercizi || []).length} esercizi · ≈ ${A.formattaDurata(stimaDurataVoci(g.esercizi))}</p>
             </button>
             <button type="button" class="btn primary block" data-inizia="${g.id}" style="margin-top:12px">Inizia allenamento</button>
           </div>`)}

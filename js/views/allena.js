@@ -67,7 +67,7 @@ function rigaSet(e, i, j) {
   return html`
     <div class="set-row ${s.fatto ? 'done' : ''}" data-set="${j}">
       <button type="button" class="set-num ${s.tipo === 'W' ? 'w' : ''}" data-azione="tipo" data-ex="${i}" data-set="${j}">${numeroSet(e, j)}</button>
-      <span class="set-prev">${testoSet(prev)}</span>
+      ${prev && !s.fatto ? html`<button type="button" class="set-prev" data-azione="usa-prev" data-ex="${i}" data-set="${j}" title="Usa questi valori">${testoSet(prev)}</button>` : html`<span class="set-prev">${testoSet(prev)}</span>`}
       <input class="set-in" type="text" inputmode="decimal" autocomplete="off" data-campo="kg" data-ex="${i}" data-set="${j}" value="${s.kg ?? ''}" placeholder="${kgPh}">
       <input class="set-in" type="text" inputmode="numeric" autocomplete="off" data-campo="reps" data-ex="${i}" data-set="${j}" value="${s.reps ?? ''}" placeholder="${repsPh}">
       <button type="button" class="set-rpe ${s.rpe ? 'on' : ''}" data-azione="rpe" data-ex="${i}" data-set="${j}">${s.rpe ? s.rpe : raw(icone.rpe)}</button>
@@ -142,9 +142,17 @@ function aggiornaTimer() {
   const t = T.letto();
   bar.hidden = !t.attivo;
   if (!t.attivo) return;
-  el.querySelector('#timer-time').textContent = A.formattaOrologio(t.restante);
+  const tempo = el.querySelector('#timer-time');
+  if (t.restante < 0) {
+    tempo.textContent = '+' + A.formattaOrologio(-t.restante);
+    tempo.classList.add('over');
+  } else {
+    tempo.textContent = A.formattaOrologio(t.restante);
+    tempo.classList.remove('over');
+  }
+  el.querySelector('[data-azione="t-salta"]').textContent = t.restante < 0 ? 'Ok' : 'Salta';
   const perc = t.durata ? Math.max(0, Math.min(100, (t.restante / t.durata) * 100)) : 0;
-  el.querySelector('#timer-fill').style.width = perc + '%';
+  el.querySelector('#timer-fill').style.width = (t.restante < 0 ? 100 : perc) + '%';
 }
 function ridisegnaCard(i) {
   const vecchio = el.querySelector(`#ex-${i}`);
@@ -158,15 +166,33 @@ function ridisegnaTutto() {
   aggiornaStats();
 }
 
+// Ferma il riposo; se era già scaduto, il tempo in più va nei "riposi sforati"
+function chiudiRiposo() {
+  const t = T.letto();
+  if (t.attivo && t.restante < 0) w.sforamentoSec = (w.sforamentoSec || 0) + (-t.restante);
+  T.fermaRiposo();
+}
+
+function usaPrecedente(i, j) {
+  const e = w.esercizi[i], s = e.serie[j];
+  if (s.fatto) return;
+  const prev = A.setPrecedente(prevCache[e.exId], s.tipo, indiceNelTipo(e, j));
+  if (!prev) return;
+  if (prev.kg !== null && prev.kg !== undefined) s.kg = String(A.formattaKg(prev.kg)).replace(',', '.');
+  if (prev.reps) s.reps = String(prev.reps);
+  salva(); ridisegnaCard(i);
+}
+
 function spunta(i, j) {
   const e = w.esercizi[i], s = e.serie[j];
   T.sbloccaAudio();
   if (s.fatto) {
     s.fatto = false; s.pr = false;
-    T.fermaRiposo(); // spunta tolta per sbaglio: il riposo si ferma
+    chiudiRiposo(); // spunta tolta per sbaglio: il riposo si ferma
     salva(); ridisegnaCard(i); aggiornaStats();
     return;
   }
+  chiudiRiposo();
   const prev = A.setPrecedente(prevCache[e.exId], s.tipo, indiceNelTipo(e, j));
   if (s.kg === '' || s.kg === null || s.kg === undefined) {
     if (prev && prev.kg !== null && prev.kg !== undefined) s.kg = String(A.formattaKg(prev.kg)).replace(',', '.');
@@ -307,6 +333,7 @@ async function aggiungiEsercizio() {
 }
 
 async function termina() {
+  if (!w.modifica) chiudiRiposo();
   const st = A.statistiche({ ...w, fine: new Date().toISOString() });
   if (st.serie === 0) {
     const ok = await conferma({ titolo: 'Nessun set completato', testo: 'Vuoi annullare questo allenamento?', ok: 'Annulla allenamento', annulla: 'Continua', pericoloso: true });
@@ -318,7 +345,8 @@ async function termina() {
   const ok = await new Promise((resolve) => {
     const chiudi = mostraFoglio({
       titolo: w.modifica ? 'Salvare le modifiche?' : 'Terminare l\'allenamento?',
-      corpoHtml: `<p class="muted" style="margin:0 0 10px">${st.serie} serie completate, ${st.volume.toLocaleString('it-IT')} kg di volume.${nonFatti ? ` I ${nonFatti} set non spuntati verranno scartati.` : ''}</p>
+      corpoHtml: `<p class="muted" style="margin:0 0 6px">${st.serie} serie completate, ${st.volume.toLocaleString('it-IT')} kg di volume.${nonFatti ? ` I ${nonFatti} set non spuntati verranno scartati.` : ''}</p>
+        <p class="muted" style="margin:0 0 10px">Durata ${A.formattaDurata(w.modifica && w.fine ? Math.round((new Date(w.fine) - new Date(w.inizio)) / 1000) : Math.round((Date.now() - new Date(w.inizio)) / 1000))}${w.stimatoSec ? ` · stimata ${A.formattaDurata(w.stimatoSec)}` : ''}${w.sforamentoSec ? ` · riposi sforati ${A.formattaDurata(Math.round(w.sforamentoSec))}` : ''}</p>
         <input class="input" id="nota-fine" placeholder="Nota (facoltativa): come è andata?" value="${esc(w.note || '')}">
         <div class="actions" style="margin-top:12px"><button type="button" class="btn primary" id="btn-ok-fine">${w.modifica ? 'Salva' : 'Termina'}</button></div>`,
       chiudiTesto: 'Continua',
@@ -390,6 +418,7 @@ function bind() {
     const i = Number(b.dataset.ex), j = Number(b.dataset.set);
     switch (b.dataset.azione) {
       case 'check': return spunta(i, j);
+      case 'usa-prev': return usaPrecedente(i, j);
       case 'tipo': return tipoSet(i, j);
       case 'rpe': return rpeSet(i, j);
       case 'add-set': return aggiungiSet(i);
@@ -398,7 +427,7 @@ function bind() {
       case 'nota': return notaEsercizio(i);
       case 't-meno': return T.aggiungiRiposo(-15);
       case 't-piu': return T.aggiungiRiposo(15);
-      case 't-salta': return T.fermaRiposo();
+      case 't-salta': chiudiRiposo(); salva(); return undefined;
       default: return undefined;
     }
   });

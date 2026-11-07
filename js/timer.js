@@ -1,5 +1,5 @@
 // Timer di riposo, suono di fine riposo, schermo sempre acceso, timer iPhone via Comando rapido.
-import { impostazioni } from './store.js';
+import { impostazioni, store } from './store.js';
 
 // ---- Audio ----
 // Su iPhone il motore audio della pagina viene sospeso quando un'altra app (es. Spotify)
@@ -169,48 +169,80 @@ export function avviaTimerIphone(secondi) {
 }
 
 // ---- Timer di riposo ----
+// Lo stato è salvato sul dispositivo: iOS ricarica la web app quando si torna da un'altra
+// app, e il timer deve sopravvivere. Dopo lo zero continua a contare in negativo (riposo sforato).
+const CHIAVE_TIMER = 'timerRiposo';
 const stato = { fine: 0, durata: 0, attivo: false, suonato: false };
 const ascoltatori = new Set();
 let intervallo = null;
 
+function salvaStato() {
+  if (stato.attivo) store.set(CHIAVE_TIMER, { fine: stato.fine, durata: stato.durata, suonato: stato.suonato });
+  else store.remove(CHIAVE_TIMER);
+}
 function notifica() { for (const f of ascoltatori) { try { f(letto()); } catch (e) { /* ignora */ } } }
 function tick() {
   if (!stato.attivo) return;
   const r = restante();
   if (r <= 0 && !stato.suonato) {
     stato.suonato = true;
+    salvaStato();
     suonaFineRiposo();
-    stato.attivo = false;
-    clearInterval(intervallo); intervallo = null;
-    notifica();
-    return;
   }
   notifica();
 }
-export function letto() { return { attivo: stato.attivo, restante: restante(), durata: stato.durata }; }
-export function restante() { return stato.attivo ? Math.max(0, Math.ceil((stato.fine - Date.now()) / 1000)) : 0; }
+function avviaIntervallo() {
+  clearInterval(intervallo);
+  intervallo = setInterval(tick, 250);
+}
+export function letto() { const r = restante(); return { attivo: stato.attivo, restante: r, oltre: stato.attivo && r < 0, durata: stato.durata }; }
+export function restante() { return stato.attivo ? Math.ceil((stato.fine - Date.now()) / 1000) : 0; }
 export function avviaRiposo(secondi) {
   if (!secondi || secondi <= 0) return;
   stato.fine = Date.now() + secondi * 1000;
   stato.durata = secondi;
   stato.attivo = true;
   stato.suonato = false;
-  clearInterval(intervallo);
-  intervallo = setInterval(tick, 250);
+  salvaStato();
+  avviaIntervallo();
   avviaTimerIphone(secondi);
   notifica();
 }
 export function aggiungiRiposo(secondi) {
-  if (!stato.attivo) return;
+  if (!stato.attivo || stato.suonato) return;
   stato.fine += secondi * 1000;
   if (stato.fine < Date.now()) stato.fine = Date.now();
   stato.durata = Math.max(0, stato.durata + secondi);
+  salvaStato();
   notifica();
 }
 export function fermaRiposo() {
   stato.attivo = false;
+  stato.suonato = false;
   clearInterval(intervallo); intervallo = null;
+  salvaStato();
   notifica();
 }
 export function ascoltaRiposo(f) { ascoltatori.add(f); return () => ascoltatori.delete(f); }
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tick(); });
+
+// Ripristino dopo una ricarica della pagina
+(function ripristina() {
+  const s = store.get(CHIAVE_TIMER, null);
+  if (!s || !s.fine) return;
+  const passatiDa = (Date.now() - s.fine) / 1000;
+  if (passatiDa > 30 * 60) { store.remove(CHIAVE_TIMER); return; } // troppo vecchio
+  stato.fine = s.fine;
+  stato.durata = s.durata || 0;
+  stato.attivo = true;
+  stato.suonato = s.suonato || passatiDa > 60; // scaduto da più di un minuto: non suona più
+  avviaIntervallo();
+})();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  // al rientro: riattiva l'audio se possibile e aggiorna subito il timer
+  try { const c = contesto(); if (c) riattiva(c); } catch (e) { /* ignora */ }
+  tick();
+});
+// qualunque tocco riarma l'audio (dopo un cambio app iOS lo sospende)
+document.addEventListener('pointerdown', () => { if (stato.attivo) sbloccaAudio(); }, { passive: true });

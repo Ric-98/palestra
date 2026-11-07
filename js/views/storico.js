@@ -60,6 +60,7 @@ export function renderDettaglio(el, params) {
       <div><span>Volume</span><strong>${st.volume.toLocaleString('it-IT')} kg</strong></div>
       <div><span>Serie</span><strong>${st.serie}</strong></div>
     </div>
+    ${a.stimatoSec || a.sforamentoSec ? html`<p class="muted small" style="margin:-8px 4px 14px">${a.stimatoSec ? `Durata stimata ${A.formattaDurata(a.stimatoSec)} · effettiva ${A.formattaDurata(st.durataSec)}` : ''}${a.sforamentoSec ? ` · riposi sforati ${A.formattaDurata(Math.round(a.sforamentoSec))}` : ''}</p>` : ''}
     ${a.note ? html`<div class="ex-note" style="margin-bottom:12px">${a.note}</div>` : ''}
     <div class="stack">
       ${(a.esercizi || []).map((e) => html`

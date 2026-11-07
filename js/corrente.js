@@ -23,7 +23,7 @@ export function esercizioDaPiano(voce) {
   const pref = prefEsercizio(cat.id);
   const pianificate = espandiSerie(voce.serie || '3x10');
   const serie = [];
-  if (voce.avvicinamento !== false) serie.push({ tipo: 'W', kg: '', reps: '', rpe: null, fatto: false, target: '' });
+  if (voce.avvicinamento === true) serie.push({ tipo: 'W', kg: '', reps: '', rpe: null, fatto: false, target: '' });
   for (const p of pianificate) serie.push({ tipo: p.tipo === 'W' ? 'W' : 'N', kg: '', reps: '', rpe: null, fatto: false, target: p.reps || '', notaSet: p.nota || '' });
   return {
     exId: cat.id,
@@ -36,7 +36,25 @@ export function esercizioDaPiano(voce) {
   };
 }
 
+// Stima della durata: 40 secondi di lavoro per ogni set più il riposo dopo ogni set
+// (nelle superserie il riposo conta solo dopo il secondo esercizio della coppia).
+export const SECONDI_PER_SET = 40;
+export function stimaDurataSec(esercizi) {
+  let sec = 0;
+  esercizi.forEach((e, i) => {
+    const n = (e.serie || []).length;
+    const next = esercizi[i + 1];
+    const primoDiSuperset = !!(e.superset && next && next.superset === e.superset);
+    sec += n * (SECONDI_PER_SET + (primoDiSuperset ? 0 : (e.riposo || 0)));
+  });
+  return sec;
+}
+export function stimaDurataVoci(voci) {
+  return stimaDurataSec((voci || []).map(esercizioDaPiano));
+}
+
 export function nuovoAllenamento({ titolo, schedaId = null, giornoId = null, voci = [] }) {
+  const esercizi = voci.map(esercizioDaPiano);
   return {
     id: nuovoId(),
     titolo,
@@ -45,6 +63,8 @@ export function nuovoAllenamento({ titolo, schedaId = null, giornoId = null, voc
     inizio: new Date().toISOString(),
     fine: null,
     note: '',
-    esercizi: voci.map(esercizioDaPiano),
+    stimatoSec: stimaDurataSec(esercizi),
+    sforamentoSec: 0,
+    esercizi,
   };
 }

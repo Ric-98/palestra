@@ -4,59 +4,199 @@
     "nome": "Scheda del coach",
     "dal": "2026-11-04",
     "attiva": true,
-    "note": "Le serie indicate sono tutte serie allenanti: su ogni esercizio, tranne dove il coach dice diversamente, almeno una serie di avvicinamento. Addome e polpacci 2 volte a settimana.",
+    "note": "Addome e polpacci 2 volte a settimana.",
     "giorni": [
       {
         "id": "spalle-petto-braccia",
         "nome": "Spalle, Petto e Braccia",
         "esercizi": [
-          { "ex": "laterali-incrociate-cavo-basso", "serie": "4x12-15" },
-          { "ex": "lento-manubri", "serie": "3x6-10" },
-          { "ex": "lento-avanti-multipower", "serie": "3x8-12" },
-          { "ex": "croci-cavi-bassi-panca-45", "serie": "3x12-15" },
-          { "ex": "push-down-vulken", "serie": "3x12-15", "superset": "A" },
-          { "ex": "curl-martello-vulken", "serie": "3x12-15", "superset": "A" },
-          { "ex": "french-press-ez-inclinata", "serie": "3x8-10", "superset": "B" },
-          { "ex": "curl-alternato-seduto", "serie": "3x8-10", "superset": "B" }
+          {
+            "ex": "laterali-incrociate-cavo-basso",
+            "serie": "4x12-15"
+          },
+          {
+            "ex": "lento-manubri",
+            "serie": "3x6-10"
+          },
+          {
+            "ex": "lento-avanti-multipower",
+            "serie": "3x8-12"
+          },
+          {
+            "ex": "croci-cavi-bassi-panca-45",
+            "serie": "3x12-15"
+          },
+          {
+            "ex": "push-down-vulken",
+            "serie": "3x12-15",
+            "superset": "A"
+          },
+          {
+            "ex": "curl-martello-vulken",
+            "serie": "3x12-15",
+            "superset": "A"
+          },
+          {
+            "ex": "french-press-ez-inclinata",
+            "serie": "3x8-10",
+            "superset": "B"
+          },
+          {
+            "ex": "curl-alternato-seduto",
+            "serie": "3x8-10",
+            "superset": "B"
+          }
         ]
       },
       {
         "id": "gambe",
         "nome": "Gambe",
         "esercizi": [
-          { "ex": "adduttori", "serie": "3x12-15" },
-          { "ex": "hack-squat", "serie": ["6-10", "6-10", { "reps": "12", "nota": "tensione continua" }] },
-          { "ex": "leg-press", "serie": "3x10-20" },
-          { "ex": "leg-extension", "serie": ["10", "10", "20"] },
-          { "ex": "leg-curl-seduto", "serie": ["10", "10", "20"] },
-          { "ex": "leg-curl-singolo", "serie": "3x12" },
-          { "ex": "abductor", "serie": "3x30" }
+          {
+            "ex": "adduttori",
+            "serie": "3x12-15"
+          },
+          {
+            "ex": "hack-squat",
+            "serie": [
+              "6-10",
+              "6-10",
+              {
+                "reps": "12",
+                "nota": "tensione continua"
+              }
+            ]
+          },
+          {
+            "ex": "leg-press",
+            "serie": "3x10-20"
+          },
+          {
+            "ex": "leg-extension",
+            "serie": [
+              "10",
+              "10",
+              "20"
+            ]
+          },
+          {
+            "ex": "leg-curl-seduto",
+            "serie": [
+              "10",
+              "10",
+              "20"
+            ]
+          },
+          {
+            "ex": "leg-curl-singolo",
+            "serie": "3x12"
+          },
+          {
+            "ex": "abductor",
+            "serie": "3x30"
+          }
         ]
       },
       {
         "id": "petto-spalle-tricipiti",
         "nome": "Petto, Spalle e Tricipiti",
         "esercizi": [
-          { "ex": "peck-fly", "serie": [{ "reps": "10", "nota": "2\" di picco + negativa lenta" }, "12", "12"] },
-          { "ex": "inclinata-multipower", "serie": ["6-10", "6-10", { "reps": "10", "nota": "negativa 4\"" }] },
-          { "ex": "inclinata-manubri", "serie": "3x6-10" },
-          { "ex": "chest-super-incline", "serie": ["8-10", "8-10", "15"] },
-          { "ex": "laterali-macchina", "serie": "3x15-20" },
-          { "ex": "laterali-seduto", "serie": "3x10-12" },
-          { "ex": "push-down-singolo", "serie": "3x12-15", "nota": "1\" di picco" }
+          {
+            "ex": "peck-fly",
+            "serie": [
+              {
+                "reps": "10",
+                "nota": "2\" di picco + negativa lenta"
+              },
+              "12",
+              "12"
+            ]
+          },
+          {
+            "ex": "inclinata-multipower",
+            "serie": [
+              "6-10",
+              "6-10",
+              {
+                "reps": "10",
+                "nota": "negativa 4\""
+              }
+            ]
+          },
+          {
+            "ex": "inclinata-manubri",
+            "serie": "3x6-10"
+          },
+          {
+            "ex": "chest-super-incline",
+            "serie": [
+              "8-10",
+              "8-10",
+              "15"
+            ]
+          },
+          {
+            "ex": "laterali-macchina",
+            "serie": "3x15-20"
+          },
+          {
+            "ex": "laterali-seduto",
+            "serie": "3x10-12"
+          },
+          {
+            "ex": "push-down-singolo",
+            "serie": "3x12-15",
+            "nota": "1\" di picco"
+          }
         ]
       },
       {
         "id": "schiena-femorali-bicipiti",
         "nome": "Schiena, Femorali e Bicipiti",
         "esercizi": [
-          { "ex": "lat-macchina", "serie": "3x10-12" },
-          { "ex": "rematore-bilanciere", "serie": ["6-10", "6-10", { "reps": "12", "nota": "tocco a terra" }] },
-          { "ex": "remata-prono-macchina", "serie": "3x8-12" },
-          { "ex": "rowing-singolo-macchina", "serie": ["8-10", "8-10", { "reps": "12", "nota": "2\" di picco" }] },
-          { "ex": "high-row", "serie": "3x10-15" },
-          { "ex": "semitesi-multipower", "serie": "3x12-15" },
-          { "ex": "curl-singolo-cavo-basso", "serie": "3x12-15", "nota": "1\" di picco" }
+          {
+            "ex": "lat-macchina",
+            "serie": "3x10-12"
+          },
+          {
+            "ex": "rematore-bilanciere",
+            "serie": [
+              "6-10",
+              "6-10",
+              {
+                "reps": "12",
+                "nota": "tocco a terra"
+              }
+            ]
+          },
+          {
+            "ex": "remata-prono-macchina",
+            "serie": "3x8-12"
+          },
+          {
+            "ex": "rowing-singolo-macchina",
+            "serie": [
+              "8-10",
+              "8-10",
+              {
+                "reps": "12",
+                "nota": "2\" di picco"
+              }
+            ]
+          },
+          {
+            "ex": "high-row",
+            "serie": "3x10-15"
+          },
+          {
+            "ex": "semitesi-multipower",
+            "serie": "3x12-15"
+          },
+          {
+            "ex": "curl-singolo-cavo-basso",
+            "serie": "3x12-15",
+            "nota": "1\" di picco"
+          }
         ]
       }
     ],
@@ -66,9 +206,21 @@
         "nome": "Addome e Polpacci",
         "voltePerSettimana": 2,
         "esercizi": [
-          { "ex": "crunch-parallele", "serie": "3x10-15", "avvicinamento": false },
-          { "ex": "crunch-cavo", "serie": "3x10-15", "avvicinamento": false },
-          { "ex": "calf-pressa", "serie": "4x15-20", "avvicinamento": false }
+          {
+            "ex": "crunch-parallele",
+            "serie": "3x10-15",
+            "avvicinamento": false
+          },
+          {
+            "ex": "crunch-cavo",
+            "serie": "3x10-15",
+            "avvicinamento": false
+          },
+          {
+            "ex": "calf-pressa",
+            "serie": "4x15-20",
+            "avvicinamento": false
+          }
         ]
       }
     ]
