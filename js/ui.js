@@ -40,7 +40,13 @@ function apriFoglio(contenuto) {
   back.className = 'sheet-backdrop';
   back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${contenuto}</div>`;
   document.body.appendChild(back);
-  const chiudi = () => back.remove();
+  let chiuso = false;
+  const chiudi = () => {
+    if (chiuso) return;
+    chiuso = true;
+    back.classList.add('via');
+    setTimeout(() => back.remove(), 220);
+  };
   back.addEventListener('click', (e) => { if (e.target === back) { chiudi(); back.dispatchEvent(new CustomEvent('annulla')); } });
   return { back, chiudi };
 }

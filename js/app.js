@@ -38,6 +38,18 @@ route('/esercizio/:id', renderEsercizio);
 route('/misure', renderMisure);
 route('/calendario', renderCalendario);
 
+// Profondità delle schermate per decidere la direzione della transizione
+const PROFONDITA = { allenamento: 0, alimentazione: 0, profilo: 0, allena: 2, esercizio: 2, modifica: 2 };
+function profondita(path) {
+  const segs = path.split('/').filter(Boolean);
+  let d = PROFONDITA[segs[0]];
+  if (d === undefined) d = 1;
+  if (segs[0] === 'storico' && segs.length > 1) d = 2;
+  return d;
+}
+let pathPrecedente = null;
+const riduciMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const TAB_DI = { allenamento: 'allenamento', giorno: 'allenamento', modifica: 'allenamento', allena: 'allenamento', storico: 'allenamento', alimentazione: 'alimentazione', dieta: 'alimentazione', convertitore: 'alimentazione', profilo: 'profilo', statistiche: 'profilo', esercizi: 'profilo', esercizio: 'profilo', misure: 'profilo', calendario: 'profilo' };
 let smonta = null;
 
@@ -57,12 +69,24 @@ async function avvia() {
       if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     }
-    if (typeof smonta === 'function') { try { smonta(); } catch (e) { console.warn(e); } }
-    smonta = null;
-    view.innerHTML = '';
-    const esito = r.handler(view, params);
-    if (typeof esito === 'function') smonta = esito;
-    window.scrollTo(0, 0);
+    const disegna = () => {
+      if (typeof smonta === 'function') { try { smonta(); } catch (e) { console.warn(e); } }
+      smonta = null;
+      view.innerHTML = '';
+      const esito = r.handler(view, params);
+      if (typeof esito === 'function') smonta = esito;
+      window.scrollTo(0, 0);
+    };
+    const primaVolta = pathPrecedente === null;
+    const dPrima = primaVolta ? 0 : profondita(pathPrecedente);
+    const dDopo = profondita(path);
+    document.documentElement.dataset.nav = dDopo > dPrima ? 'avanti' : dDopo < dPrima ? 'indietro' : 'tab';
+    pathPrecedente = path;
+    if (!primaVolta && !riduciMovimento && typeof document.startViewTransition === 'function') {
+      document.startViewTransition(disegna);
+    } else {
+      disegna();
+    }
   });
 }
 

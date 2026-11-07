@@ -1,5 +1,6 @@
 // Tab Allenamento: allenamento in corso, scheda attiva con i giorni, ultimi allenamenti.
-import { html, raw, icone, conferma, chiediTesto, toast, formattaData } from '../ui.js';
+import { html, raw, icone, conferma, chiediTesto, toast, formattaData, isIOS, isStandalone, mostraFoglio } from '../ui.js';
+import { store } from '../store.js';
 import { vai } from '../router.js';
 import * as C from '../corrente.js';
 import { stimaDurataVoci } from '../corrente.js';
@@ -55,6 +56,14 @@ export function renderAllenamento(el) {
       <h1 class="page-title">Allenamento</h1>
     </header>
 
+    ${!isStandalone() && isIOS() && !store.get('nascondiHintHome', false) ? html`
+      <div class="card hint">
+        <p class="card-sub">Stai usando l'app da Safari. Dall'icona sulla Home è più fluida e a tutto schermo.</p>
+        <div class="row" style="gap:8px; margin-top:8px">
+          <button type="button" class="btn small" id="btn-hint-come">Come si fa</button>
+          <button type="button" class="btn small ghost" id="btn-hint-no">Non mostrare più</button>
+        </div>
+      </div>` : ''}
     ${corrente ? html`
       <button type="button" class="card card-btn in-corso" id="btn-riprendi">
         <div class="row between">
@@ -111,6 +120,10 @@ export function renderAllenamento(el) {
     </div>
   `.toString();
 
+  const hintCome = el.querySelector('#btn-hint-come');
+  if (hintCome) hintCome.onclick = () => mostraFoglio({ titolo: 'Aggiungi alla Home', corpoHtml: `<ol class="steps"><li>Tocca <b>Condividi</b> in basso, il quadrato con la freccia.</li><li>Scorri e tocca <b>Aggiungi alla schermata Home</b>, poi <b>Aggiungi</b>.</li><li>Da ora apri l'app dall'icona dorata.</li></ol>` });
+  const hintNo = el.querySelector('#btn-hint-no');
+  if (hintNo) hintNo.onclick = () => { store.set('nascondiHintHome', true); renderAllenamento(el); };
   const riprendi = el.querySelector('#btn-riprendi');
   if (riprendi) riprendi.onclick = () => vai('/allena');
   const nuovo = el.querySelector('#btn-nuovo-giorno');

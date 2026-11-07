@@ -694,3 +694,58 @@ a { color: var(--accent); }
 button.set-prev { border: 0; background: none; color: var(--text-2); text-align: left; padding: 0 0 0 2px; font: inherit; font-size: 12px; cursor: pointer; text-decoration: underline dotted; text-decoration-color: var(--text-3); text-underline-offset: 3px; }
 button.set-prev:active { color: var(--accent); }
 .timer-time.over { color: var(--text); }
+
+/* =====================================================================
+   Fluidità: transizioni tra schermate, tocco, fogli, campi senza zoom
+   ===================================================================== */
+/* Transizioni tra schermate (Safari 18+, altrimenti istantaneo) */
+.tabbar { view-transition-name: tabbar; }
+.update-banner { view-transition-name: avviso; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .24s; animation-timing-function: cubic-bezier(.2,.8,.2,1); mix-blend-mode: normal; }
+html[data-nav="avanti"]::view-transition-old(root) { animation-name: vt-out-sx; }
+html[data-nav="avanti"]::view-transition-new(root) { animation-name: vt-in-dx; }
+html[data-nav="indietro"]::view-transition-old(root) { animation-name: vt-out-dx; }
+html[data-nav="indietro"]::view-transition-new(root) { animation-name: vt-in-sx; }
+html[data-nav="tab"]::view-transition-old(root) { animation-name: vt-fade-out; animation-duration: .16s; }
+html[data-nav="tab"]::view-transition-new(root) { animation-name: vt-fade-in; animation-duration: .2s; }
+::view-transition-old(tabbar), ::view-transition-new(tabbar) { animation: none; }
+@keyframes vt-in-dx { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes vt-out-sx { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-16px); } }
+@keyframes vt-in-sx { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes vt-out-dx { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(28px); } }
+@keyframes vt-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vt-fade-out { from { opacity: 1; } to { opacity: 0; } }
+.view { animation: none; }
+
+/* Risposta al tocco, uniforme */
+.btn, .card-btn, .list-item, .tile, .chip, .pill, .set-check, .set-num, .set-rpe, .icon-btn, .scelta, .tab-riga, .cal-giorno, .timer-btn, .card-link, .segmented button, button.set-prev {
+  transition: transform .09s ease, opacity .09s ease, background-color .12s ease;
+}
+.btn:active, .tile:active, .chip:active, .pill:active, .set-check:active, .set-num:active, .set-rpe:active, .icon-btn:active, .scelta:active, .timer-btn:active, .segmented button:active { transform: scale(.96); opacity: .85; }
+.card-btn:active, .list-item:active, .card-link:active, .tab-riga:active { opacity: .7; }
+.tab:active { opacity: .6; }
+
+/* Fogli dal basso: salgono con una molla, lo sfondo si scurisce */
+.sheet-backdrop { animation: sheet-fondo .2s ease-out both; }
+.sheet { animation: sheet-sale .32s cubic-bezier(.2,.9,.3,1) both; will-change: transform; }
+.sheet-backdrop.via { animation: sheet-fondo-via .2s ease-in both; }
+.sheet-backdrop.via .sheet { animation: sheet-scende .2s ease-in both; }
+@keyframes sheet-sale { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sheet-scende { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes sheet-fondo { from { background: rgba(0,0,0,0); } to { background: rgba(0,0,0,.6); } }
+@keyframes sheet-fondo-via { from { background: rgba(0,0,0,.6); } to { background: rgba(0,0,0,0); } }
+.toast { animation: toast-sale .22s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes toast-sale { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Campi a 16 px: iOS non zooma più la pagina quando li tocchi */
+.input, .input.piccolo, .set-in, .select, input[type="search"] { font-size: 16px; }
+.input.grande { font-size: 24px; }
+.set-in { height: 38px; }
+.select { padding: 6px 10px; }
+.input.piccolo { padding: 8px 10px; }
+
+.card.hint { border: 1px solid var(--line); background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .sheet-backdrop, .toast { animation: none; }
+}
