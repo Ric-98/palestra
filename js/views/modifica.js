@@ -18,7 +18,7 @@ export function renderModifica(el, params) {
     serie: espandiSerie(v.serie).map((x) => ({ reps: x.reps || '', nota: x.nota || '' })),
     nota: v.nota || '',
     superset: v.superset || '',
-    avvicinamento: v.avvicinamento !== false,
+    avvicinamento: v.avvicinamento === true,
   }));
 
   function cardVoce(v, i) {
@@ -143,7 +143,7 @@ export function renderModifica(el, params) {
     foglio.querySelectorAll('[data-ex-id]').forEach((b) => {
       b.onclick = () => {
         chiudi();
-        voci.push({ ex: b.dataset.exId, serie: [{ reps: '10', nota: '' }, { reps: '10', nota: '' }, { reps: '10', nota: '' }], nota: '', superset: '', avvicinamento: true });
+        voci.push({ ex: b.dataset.exId, serie: [{ reps: '10', nota: '' }, { reps: '10', nota: '' }, { reps: '10', nota: '' }], nota: '', superset: '', avvicinamento: false });
         disegna();
         setTimeout(() => { const c = el.querySelectorAll('.ed-card'); c[c.length - 1]?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
       };
@@ -158,7 +158,7 @@ export function renderModifica(el, params) {
       const out = { ex: v.ex, serie: v.serie.map((x) => (x.nota ? { reps: x.reps, nota: x.nota } : x.reps)) };
       if (v.nota) out.nota = v.nota;
       if (v.superset) out.superset = v.superset;
-      if (!v.avvicinamento) out.avvicinamento = false;
+      if (v.avvicinamento) out.avvicinamento = true;
       return out;
     });
     salvaGiorno(s.id, g.id, { nome: nome.trim(), esercizi });
