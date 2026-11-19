@@ -82,10 +82,20 @@ async function avvia() {
     const dDopo = profondita(path);
     document.documentElement.dataset.nav = dDopo > dPrima ? 'avanti' : dDopo < dPrima ? 'indietro' : 'tab';
     pathPrecedente = path;
-    if (!primaVolta && !riduciMovimento && typeof document.startViewTransition === 'function') {
-      document.startViewTransition(disegna);
+    // La schermata va disegnata una volta sola; se la transizione non parte (pagina non
+    // in primo piano, browser che la salta) dopo 250 ms si disegna comunque.
+    let disegnata = false;
+    const unaVolta = () => { if (disegnata) return; disegnata = true; disegna(); };
+    if (!primaVolta && !riduciMovimento && typeof document.startViewTransition === 'function' && document.visibilityState === 'visible') {
+      try {
+        const vt = document.startViewTransition(unaVolta);
+        if (vt && vt.finished) vt.finished.catch(() => {});
+        if (vt && vt.ready) vt.ready.catch(() => {});
+        if (vt && vt.updateCallbackDone) vt.updateCallbackDone.catch(() => {});
+      } catch (e) { unaVolta(); }
+      setTimeout(unaVolta, 250);
     } else {
-      disegna();
+      unaVolta();
     }
   });
 }

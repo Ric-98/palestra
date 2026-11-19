@@ -749,3 +749,5 @@ html[data-nav="tab"]::view-transition-new(root) { animation-name: vt-fade-in; an
 @media (prefers-reduced-motion: reduce) {
   .sheet, .sheet-backdrop, .toast { animation: none; }
 }
+.allena-stats { gap: 18px; }
+.allena-stats #st-manca { white-space: nowrap; }

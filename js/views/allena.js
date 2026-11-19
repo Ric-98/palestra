@@ -109,6 +109,7 @@ function layout() {
         <div><span>Durata</span><strong id="st-durata">0:00</strong></div>
         <div><span>Volume</span><strong id="st-volume">0 kg</strong></div>
         <div><span>Serie</span><strong id="st-serie">0</strong></div>
+        ${w.modifica ? '' : html`<div><span>Mancano</span><strong id="st-manca">—</strong></div>`}
       </div>
     </header>
     <div id="esercizi">${w.esercizi.map((_, i) => cardEsercizio(i))}</div>
@@ -129,12 +130,37 @@ function aggiornaStats() {
   const st = A.statistiche({ ...w, fine: new Date().toISOString() });
   el.querySelector('#st-volume').textContent = `${st.volume.toLocaleString('it-IT')} kg`;
   el.querySelector('#st-serie').textContent = String(st.serie);
+  aggiornaManca();
+}
+// Tempo che manca: per ogni set non ancora spuntato 40 secondi di lavoro più il suo riposo
+// (nelle superserie il riposo conta solo dopo il secondo esercizio), corretto con il fattore
+// di ritmo, più il riposo in corso.
+function mancaSec() {
+  let sec = 0, rimasti = 0;
+  w.esercizi.forEach((e, i) => {
+    const n = e.serie.filter((s) => !s.fatto).length;
+    rimasti += n;
+    sec += n * (C.SECONDI_PER_SET + (primoDiSuperset(i) ? 0 : (e.riposo || 0)));
+  });
+  sec *= C.fattoreRitmo(); // calibrato sul ritmo reale degli ultimi allenamenti
+  const t = T.letto();
+  if (t.attivo && t.restante > 0) sec += t.restante;
+  return { sec, rimasti };
+}
+function aggiornaManca() {
+  const m = el.querySelector('#st-manca');
+  if (!m) return;
+  const { sec, rimasti } = mancaSec();
+  if (!rimasti) { m.textContent = 'finito'; return; }
+  const min = Math.round(sec / 60);
+  m.textContent = min < 1 ? '< 1 min' : min >= 60 ? `≈ ${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}` : `≈ ${min} min`;
 }
 function aggiornaDurata() {
   const d = el.querySelector('#st-durata');
   if (!d) return;
   const fine = w.modifica && w.fine ? new Date(w.fine) : Date.now();
   d.textContent = A.formattaOrologio((fine - new Date(w.inizio)) / 1000);
+  aggiornaManca();
 }
 function aggiornaTimer() {
   const bar = el.querySelector('#timer-bar');
